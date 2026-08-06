@@ -1,0 +1,13 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "kasatkina/hero",
+  "title": "Главный экран (Hero)",
+  "description": "Первый экран сайта доктора Касаткиной",
+  "category": "design",
+  "icon": "superhero",
+  "keywords": ["hero", "главный", "касаткина"],
+  "supports": {
+    "align": ["full"]
+  }
+}
