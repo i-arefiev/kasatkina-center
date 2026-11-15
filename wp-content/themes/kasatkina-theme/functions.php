@@ -220,7 +220,7 @@ function kasatkina_nav_menu_css_class( $classes, $item, $args ) {
 }
 add_filter( 'nav_menu_css_class', 'kasatkina_nav_menu_css_class', 10, 3 );
 
-
+//sYa4CRtq8bDS
 // Включаем поддержку кастомного логотипа
 function kasatkina_setup_theme() {
     add_theme_support( 'custom-logo', array(

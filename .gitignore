@@ -1,0 +1,14 @@
+# Секреты и локальные настройки
+wp-config.php
+.env
+
+# Резервные копии и служебные папки WordPress
+*.zip
+*.wpress
+wp-content/ai1wm-backups/
+wp-content/upgrade/
+wp-content/cache/
+
+# Разработка
+node_modules/
+.DS_Store
