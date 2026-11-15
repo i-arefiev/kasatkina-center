@@ -98,7 +98,7 @@ $vid = get_theme_file_uri( 'assets/video/' );
 					<p class="m-0 text-xs text-ink/60">Действует до 24.06.2030</p>
 					<!-- /wp:paragraph -->
 					<!-- wp:paragraph {"className":"ks-doc-link m-0 mt-3 text-xs font-semibold"} -->
-					<p class="ks-doc-link m-0 mt-3 text-xs font-semibold"><a href="<?php echo esc_url( $img ); ?>diplomas/accreditation-2025.jpg" target="_blank" rel="noopener">Открыть выписку об аккредитации</a></p>
+					<p class="ks-doc-link m-0 mt-3 text-xs font-semibold"><a href="<?php echo esc_url( $img ); ?>diplomas/accreditation-2025.pdf" target="_blank" rel="noopener">Открыть выписку об аккредитации (PDF)</a></p>
 					<!-- /wp:paragraph -->
 				</div>
 				<!-- /wp:group -->

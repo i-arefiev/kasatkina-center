@@ -35,8 +35,11 @@
 	 * Колонки сеток и контейнеры секций — «контейнеры» для единиц cqi:
 	 * крупные заголовки (text-3xl…6xl, см. tailwind.config.js) не шире своей колонки.
 	 */
-	/* Кнопки и иконки — по размеру содержимого (колонки «auto»), поэтому не контейнеры. */
-	.grid > :not(.wp-block-buttons):not(.wp-block-kasatkina-icon),
+	/*
+	 * Кнопки, иконки и медиа (img, svg, video…) — по размеру содержимого, поэтому не контейнеры:
+	 * с container-type элемент с width:auto схлопывается до нулевой ширины.
+	 */
+	.grid > :not(.wp-block-buttons):not(.wp-block-kasatkina-icon):not(img):not(svg):not(video):not(iframe):not(picture):not(canvas),
 	.mx-auto[class*='max-w-'] {
 		container-type: inline-size;
 	}

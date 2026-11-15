@@ -78,7 +78,7 @@ function kasatkina_import_theme_images(): array {
 	$files = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $base, FilesystemIterator::SKIP_DOTS ) );
 	foreach ( $files as $file ) {
 		$rel = $prefix . str_replace( $base, '', $file->getPathname() );
-		if ( ! preg_match( '/\.(png|jpe?g|webp|svg|mp4|webm)$/i', $rel ) ) {
+		if ( ! preg_match( '/\.(png|jpe?g|webp|svg|mp4|webm|pdf)$/i', $rel ) ) {
 			continue;
 		}
 
