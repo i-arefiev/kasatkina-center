@@ -62,6 +62,9 @@ $vid = get_theme_file_uri( 'assets/video/' );
 					<!-- wp:paragraph {"className":"m-0 text-xs text-ink/60"} -->
 					<p class="m-0 text-xs text-ink/60">Минздрав Калининградской области</p>
 					<!-- /wp:paragraph -->
+					<!-- wp:paragraph {"className":"ks-doc-link m-0 mt-3 text-xs font-semibold"} -->
+					<p class="ks-doc-link m-0 mt-3 text-xs font-semibold"><a href="<?php echo esc_url( home_url( "/" ) ); ?>public/documents/Doc.pdf" target="_blank" rel="noopener">Открыть выписку из реестра (PDF)</a></p>
+					<!-- /wp:paragraph -->
 				</div>
 				<!-- /wp:group -->
 			</div>
@@ -80,7 +83,7 @@ $vid = get_theme_file_uri( 'assets/video/' );
 						<p class="m-0 text-sm font-bold leading-tight text-ink">Аккредитация специалиста</p>
 						<!-- /wp:paragraph -->
 						<!-- wp:paragraph {"className":"m-0 text-[10px] text-ink/60"} -->
-						<p class="m-0 text-[10px] text-ink/60">2022 г.</p>
+						<p class="m-0 text-[10px] text-ink/60">физиотерапия, 24.06.2025 г.</p>
 						<!-- /wp:paragraph -->
 					</div>
 					<!-- /wp:group -->
@@ -92,7 +95,10 @@ $vid = get_theme_file_uri( 'assets/video/' );
 					<p class="m-0 text-sm font-bold text-ink">Аккредитация специалиста</p>
 					<!-- /wp:paragraph -->
 					<!-- wp:paragraph {"className":"m-0 text-xs text-ink/60"} -->
-					<p class="m-0 text-xs text-ink/60">Врач высшей категории</p>
+					<p class="m-0 text-xs text-ink/60">Действует до 24.06.2030</p>
+					<!-- /wp:paragraph -->
+					<!-- wp:paragraph {"className":"ks-doc-link m-0 mt-3 text-xs font-semibold"} -->
+					<p class="ks-doc-link m-0 mt-3 text-xs font-semibold"><a href="<?php echo esc_url( $img ); ?>diplomas/accreditation-2025.jpg" target="_blank" rel="noopener">Открыть выписку об аккредитации</a></p>
 					<!-- /wp:paragraph -->
 				</div>
 				<!-- /wp:group -->

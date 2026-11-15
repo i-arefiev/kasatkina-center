@@ -337,14 +337,17 @@ def equipment():
 
 @pattern('licenses', 'Лицензии и руководитель', keywords='лицензия, документы, руководитель', description='Карточки документов и ссылка на страницу руководителя.')
 def licenses():
-    def doc(title, date, org_short, icon_name):
+    def doc(title, date, org_short, icon_name, link=None):
         top = group([group([
             icon(icon_name, 'text-brand', 36),
             p('Официальный документ', 'm-0 text-[10px] font-semibold uppercase tracking-widest text-ink/60'),
             p(title, 'm-0 text-sm font-bold leading-tight text-ink'),
             p(date, 'm-0 text-[10px] text-ink/60'),
         ], 'ks-doc__paper')], 'ks-doc')
-        bottom = group([p(title, 'm-0 text-sm font-bold text-ink'), p(org_short, 'm-0 text-xs text-ink/60')], 'border-t border-line/60 px-5 py-4')
+        kids = [p(title, 'm-0 text-sm font-bold text-ink'), p(org_short, 'm-0 text-xs text-ink/60')]
+        if link:
+            kids.append(p(f'<a href="{link[1]}" target="_blank" rel="noopener">{link[0]}</a>', 'ks-doc-link m-0 mt-3 text-xs font-semibold'))
+        bottom = group(kids, 'border-t border-line/60 px-5 py-4')
         return group([top, bottom], 'flex flex-col overflow-hidden rounded-2xl border border-line bg-white')
     leader = group([
         group([
@@ -355,8 +358,8 @@ def licenses():
         buttons([button('Подробнее о руководителе', HOME + 'leader/', 'ks-solid')], 'mt-8 border-t border-white/10 pt-5'),
     ], 'flex flex-col justify-between rounded-2xl bg-navy p-7 text-white')
     grid = group([
-        doc('Лицензия Л041-01157-39/00638809', 'от 25.01.2023 г.', 'Минздрав Калининградской области', 'academic'),
-        doc('Аккредитация специалиста', '2022 г.', 'Врач высшей категории', 'badge-check'),
+        doc('Лицензия Л041-01157-39/00638809', 'от 25.01.2023 г.', 'Минздрав Калининградской области', 'academic', ('Открыть выписку из реестра (PDF)', HOME + 'public/documents/Doc.pdf')),
+        doc('Аккредитация специалиста', 'физиотерапия, 24.06.2025 г.', 'Действует до 24.06.2030', 'badge-check', ('Открыть выписку об аккредитации', IMG + 'diplomas/accreditation-2025.jpg')),
         leader,
     ], 'mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3')
     head = section_head('Лицензии и документы', 'Лицензии и правовая информация', 'Официальные документы подтверждают соответствие нашей деятельности требованиям Минздрава РФ.')
@@ -436,7 +439,8 @@ def leader_education():
 @pattern('leader-diplomas', 'Руководитель: дипломы и сертификаты', 'kasatkina-leader', 'дипломы, сертификаты, документы', 'Сканы документов; по клику открываются на весь экран.')
 def leader_diplomas():
     files = ['fizio.jpg'] + [f'cert-{i}.jpg' for i in range(1, 11)]
-    grid = group([img('diplomas/' + f, f'Диплом или сертификат {i}', 'ks-doc-img m-0', lightbox=True) for i, f in enumerate(files, 1)],
+    accreditation = img('diplomas/accreditation-2025.jpg', 'Выписка об аккредитации специалиста: физиотерапия (24.06.2025, действует до 24.06.2030) и организация здравоохранения (01.09.2021)', 'ks-doc-img m-0', lightbox=True)
+    grid = group([accreditation] + [img('diplomas/' + f, f'Диплом или сертификат {i}', 'ks-doc-img m-0', lightbox=True) for i, f in enumerate(files, 1)],
                  'mt-12 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4')
     head = section_head('Дипломы и сертификаты', 'Подтверждённая квалификация', 'Все методики и процедуры в нашем центре лицензированы и соответствуют стандартам Минздрава РФ. Нажмите на документ, чтобы рассмотреть его.')
     return group([container([head, grid])], 'scroll-mt-24 border-b border-line/60 bg-surface py-16 lg:py-20', 'section', 'diplomas')

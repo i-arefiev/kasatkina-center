@@ -297,6 +297,9 @@
 		content: '✓ Подтверждено';
 		@apply absolute right-3 top-3 rounded-full bg-brand px-2.5 py-1 text-[10px] font-semibold text-white shadow-lg shadow-brand/25;
 	}
+	.ks-doc-link a {
+		@apply text-brand-dark underline decoration-brand/40 underline-offset-2 hover:text-brand;
+	}
 	.ks-doc__paper {
 		@apply absolute inset-6 flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-double border-brand/30 bg-white/80 p-5 text-center;
 	}

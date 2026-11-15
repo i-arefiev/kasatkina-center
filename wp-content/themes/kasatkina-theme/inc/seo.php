@@ -29,6 +29,17 @@ function kasatkina_seo_fields(): array {
  */
 add_action( 'parse_request', function () {
 	$path = trim( (string) wp_parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH ), '/' );
+
+	// Файлы старого сайта по прежним адресам (выписка из реестра лицензий и т. п.).
+	$legacy_files = array( 'public/documents/Doc.pdf' => 'Doc.pdf' );
+	if ( isset( $legacy_files[ $path ] ) && is_readable( KASATKINA_DIR . '/data/legacy-files/' . $legacy_files[ $path ] ) ) {
+		status_header( 200 );
+		header( 'Content-Type: application/pdf' );
+		header( 'Content-Disposition: inline; filename="' . $legacy_files[ $path ] . '"' );
+		readfile( KASATKINA_DIR . '/data/legacy-files/' . $legacy_files[ $path ] ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		exit;
+	}
+
 	if ( ! preg_match( '/^(yandex_[a-f0-9]+|google[a-f0-9]+)\.html$/', $path ) ) {
 		return;
 	}
@@ -167,6 +178,15 @@ add_action( 'template_redirect', function () {
 	);
 	if ( isset( $map[ $path ] ) ) {
 		wp_safe_redirect( home_url( $map[ $path ] ), 301 );
+		exit;
+	}
+	// Страховка: неизвестная услуга или статья со старого сайта — на список, а не на 404.
+	if ( preg_match( '#^/services/[^/]+$#', $path ) ) {
+		wp_safe_redirect( kasatkina_services_page_url(), 301 );
+		exit;
+	}
+	if ( preg_match( '#^/articles/[^/]+$#', $path ) && ! preg_match( '#^/articles/page$#', $path ) ) {
+		wp_safe_redirect( kasatkina_posts_page_url(), 301 );
 		exit;
 	}
 } );

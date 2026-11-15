@@ -235,6 +235,100 @@ function kasatkina_run_site_setup( array $opts ): array {
 		}
 	}
 
+	if ( ! empty( $opts['legacy'] ) ) {
+		$log = array_merge( $log, kasatkina_apply_legacy() );
+	}
+
+	return $log;
+}
+
+/**
+ * Перенос со старого сайта (data/legacy.json):
+ *  — статьи: создаются с теми же ярлыками, текстом, отрывком и обложкой (если такой статьи ещё нет);
+ *  — услуги: ярлык найденной услуги меняется на старый (lazeroterapiya и т. п.), чтобы адреса
+ *    /services/<ярлык>/ совпали со старыми. Прежний ярлык WordPress запоминает и сам перенаправляет.
+ */
+function kasatkina_apply_legacy(): array {
+	$file = KASATKINA_DIR . '/data/legacy.json';
+	if ( ! is_readable( $file ) ) {
+		return array( 'Файл data/legacy.json не найден — перенос со старого сайта пропущен.' );
+	}
+	$data = json_decode( (string) file_get_contents( $file ), true );
+	$log  = array();
+
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/media.php';
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+
+	foreach ( $data['articles'] ?? array() as $article ) {
+		$existing = get_posts( array( 'post_type' => 'post', 'name' => $article['slug'], 'post_status' => 'any', 'posts_per_page' => 1 ) );
+		if ( ! $existing ) {
+			$existing = get_posts( array( 'post_type' => 'post', 'title' => $article['title'], 'post_status' => 'any', 'posts_per_page' => 1 ) );
+			if ( $existing ) {
+				wp_update_post( array( 'ID' => $existing[0]->ID, 'post_name' => $article['slug'] ) );
+				$log[] = sprintf( 'Статья «%s» уже была — ярлык изменён на %s.', $article['title'], $article['slug'] );
+				continue;
+			}
+		} else {
+			$log[] = sprintf( 'Статья «%s» уже есть.', $article['title'] );
+			continue;
+		}
+
+		$post_id = wp_insert_post( wp_slash( array(
+			'post_type'    => 'post',
+			'post_status'  => 'publish',
+			'post_title'   => $article['title'],
+			'post_name'    => $article['slug'],
+			'post_excerpt' => $article['excerpt'],
+			'post_content' => $article['content'],
+			'post_date'    => $article['date'],
+		) ) );
+		$cover = KASATKINA_DIR . '/data/legacy-articles/' . $article['cover'];
+		if ( $post_id && ! is_wp_error( $post_id ) && is_readable( $cover ) ) {
+			$tmp = wp_tempnam( $article['cover'] );
+			copy( $cover, $tmp );
+			$thumb = media_handle_sideload( array( 'name' => $article['cover'], 'tmp_name' => $tmp ), $post_id, $article['title'] );
+			if ( ! is_wp_error( $thumb ) ) {
+				set_post_thumbnail( $post_id, $thumb );
+			}
+		}
+		$log[] = sprintf( 'Статья «%s» перенесена (/articles/%s/).', $article['title'], $article['slug'] );
+	}
+
+	$services = get_posts( array( 'post_type' => 'service', 'post_status' => 'any', 'posts_per_page' => -1 ) );
+	$used     = array();
+	foreach ( $data['services'] ?? array() as $legacy ) {
+		$match = null;
+		foreach ( $services as $service ) {
+			if ( $service->post_name === $legacy['slug'] ) {
+				$match = $service;
+				break;
+			}
+		}
+		if ( ! $match ) {
+			foreach ( $services as $service ) {
+				$title = mb_strtolower( $service->post_title );
+				foreach ( $legacy['match'] as $needle ) {
+					if ( ! isset( $used[ $service->ID ] ) && str_contains( $title, $needle ) ) {
+						$match = $service;
+						break 2;
+					}
+				}
+			}
+		}
+		if ( ! $match ) {
+			$log[] = sprintf( 'Услуга «%s» не найдена — /services/%s/ будет вести на список услуг. Создайте услугу с ярлыком %2$s, если нужна отдельная страница.', $legacy['title'], $legacy['slug'] );
+			continue;
+		}
+		$used[ $match->ID ] = true;
+		if ( $match->post_name !== $legacy['slug'] ) {
+			wp_update_post( array( 'ID' => $match->ID, 'post_name' => $legacy['slug'] ) );
+			$log[] = sprintf( 'Услуга «%s» — адрес /services/%s/, как на старом сайте.', $match->post_title, $legacy['slug'] );
+		} else {
+			$log[] = sprintf( 'Услуга «%s» — адрес уже совпадает со старым.', $match->post_title );
+		}
+	}
+
 	return $log;
 }
 
@@ -251,6 +345,7 @@ function kasatkina_render_setup_page(): void {
 			'overwrite' => ! empty( $_POST['overwrite'] ),
 			'reading'   => ! empty( $_POST['reading'] ),
 			'menu'      => ! empty( $_POST['menu'] ),
+			'legacy'    => ! empty( $_POST['legacy'] ),
 		) );
 	}
 	?>
@@ -278,7 +373,8 @@ function kasatkina_render_setup_page(): void {
 					<label><input type="checkbox" name="images" value="1" checked> Перенести картинки темы в медиатеку</label><br>
 					<label><input type="checkbox" name="pages" value="1" checked> Создать недостающие страницы</label><br>
 					<label><input type="checkbox" name="reading" value="1" checked> Назначить главную страницу и страницу статей</label><br>
-					<label><input type="checkbox" name="menu" value="1" checked> Создать меню, если оно ещё не назначено</label><br><br>
+					<label><input type="checkbox" name="menu" value="1" checked> Создать меню, если оно ещё не назначено</label><br>
+					<label><input type="checkbox" name="legacy" value="1" checked> Перенести статьи со старого сайта и сделать адреса услуг как на старом сайте</label><br><br>
 					<label><input type="checkbox" name="overwrite" value="1"> <strong>Перезаписать содержимое уже существующих страниц</strong></label>
 					<p class="description">Нужно при переходе с бета-версии темы. Прежнее содержимое не пропадёт — его можно вернуть через «Редакции» в редакторе страницы.</p>
 				</td></tr>

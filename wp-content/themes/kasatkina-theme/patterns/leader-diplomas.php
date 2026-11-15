@@ -35,6 +35,9 @@ $vid = get_theme_file_uri( 'assets/video/' );
 		<!-- wp:group {"className":"mt-12 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4","layout":{"type":"default"}} -->
 		<div class="wp-block-group mt-12 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
 			<!-- wp:image {"sizeSlug":"full","linkDestination":"none","lightbox":{"enabled":true},"className":"ks-doc-img m-0"} -->
+			<figure class="wp-block-image size-full ks-doc-img m-0"><img src="<?php echo esc_url( $img ); ?>diplomas/accreditation-2025.jpg" alt="Выписка об аккредитации специалиста: физиотерапия (24.06.2025, действует до 24.06.2030) и организация здравоохранения (01.09.2021)"/></figure>
+			<!-- /wp:image -->
+			<!-- wp:image {"sizeSlug":"full","linkDestination":"none","lightbox":{"enabled":true},"className":"ks-doc-img m-0"} -->
 			<figure class="wp-block-image size-full ks-doc-img m-0"><img src="<?php echo esc_url( $img ); ?>diplomas/fizio.jpg" alt="Диплом или сертификат 1"/></figure>
 			<!-- /wp:image -->
 			<!-- wp:image {"sizeSlug":"full","linkDestination":"none","lightbox":{"enabled":true},"className":"ks-doc-img m-0"} -->
