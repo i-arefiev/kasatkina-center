@@ -98,7 +98,7 @@ get_header();
 							Все статьи <?php echo kasatkina_icon( 'arrow-right', 16 ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 						</a>
 					</div>
-					<div class="mt-10 grid gap-6 md:grid-cols-3">
+					<div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 						<?php
 						while ( $related->have_posts() ) :
 							$related->the_post();

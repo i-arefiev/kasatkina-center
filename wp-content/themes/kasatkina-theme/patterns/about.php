@@ -28,8 +28,8 @@ $img = get_theme_file_uri( 'assets/images/' );
 			<!-- /wp:heading -->
 		</div>
 		<!-- /wp:group -->
-		<!-- wp:group {"className":"mt-12 grid gap-6 md:grid-cols-3","layout":{"type":"default"}} -->
-		<div class="wp-block-group mt-12 grid gap-6 md:grid-cols-3">
+		<!-- wp:group {"className":"mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3","layout":{"type":"default"}} -->
+		<div class="wp-block-group mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			<!-- wp:group {"className":"rounded-2xl border border-white/10 bg-white/[0.04] p-8 transition hover:border-brand/60 hover:bg-white/[0.06]","layout":{"type":"default"}} -->
 			<div class="wp-block-group rounded-2xl border border-white/10 bg-white/[0.04] p-8 transition hover:border-brand/60 hover:bg-white/[0.06]">
 				<!-- wp:kasatkina/icon {"icon":"heart","className":"ks-icon-tile ks-icon-tile\u002d\u002dsolid ks-icon-tile\u002d\u002dlg"} /-->

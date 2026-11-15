@@ -110,3 +110,15 @@ function kasatkina_initials( string $name ): string {
 	}
 	return mb_strtoupper( $first . $last );
 }
+
+/**
+ * Первая буква — строчная, если это не аббревиатура:
+ * «Лазеротерапия» → «лазеротерапия», «ПТСР у взрослых» → «ПТСР у взрослых».
+ */
+function kasatkina_lcfirst( string $text ): string {
+	$first_word = strtok( $text, ' ' );
+	if ( mb_strlen( $first_word ) > 1 && mb_strtoupper( $first_word ) === $first_word ) {
+		return $text;
+	}
+	return mb_strtolower( mb_substr( $text, 0, 1 ) ) . mb_substr( $text, 1 );
+}

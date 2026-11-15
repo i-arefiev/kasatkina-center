@@ -31,8 +31,8 @@ $img = get_theme_file_uri( 'assets/images/' );
 			<!-- /wp:paragraph -->
 		</div>
 		<!-- /wp:group -->
-		<!-- wp:group {"className":"mt-12 grid gap-6 md:grid-cols-3","layout":{"type":"default"}} -->
-		<div class="wp-block-group mt-12 grid gap-6 md:grid-cols-3">
+		<!-- wp:group {"className":"mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3","layout":{"type":"default"}} -->
+		<div class="wp-block-group mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			<!-- wp:group {"className":"flex flex-col overflow-hidden rounded-2xl border border-line bg-white","layout":{"type":"default"}} -->
 			<div class="wp-block-group flex flex-col overflow-hidden rounded-2xl border border-line bg-white">
 				<!-- wp:group {"className":"ks-doc","layout":{"type":"default"}} -->

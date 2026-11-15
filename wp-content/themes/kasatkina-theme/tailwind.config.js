@@ -15,6 +15,14 @@ module.exports = {
 	],
 	theme: {
 		extend: {
+			// Крупные размеры ограничены шириной колонки (cqi): длинное слово
+			// («психоконсультирование») уменьшает шрифт, а не рвётся. См. src/main.css.
+			fontSize: {
+				'3xl': [ 'min(1.875rem, 8cqi)', { lineHeight: '1.2' } ],
+				'4xl': [ 'min(2.25rem, 8cqi)', { lineHeight: '1.12' } ],
+				'5xl': [ 'min(3rem, 8cqi)', { lineHeight: '1.08' } ],
+				'6xl': [ 'min(3.75rem, 8cqi)', { lineHeight: '1.05' } ],
+			},
 			colors: {
 				brand: {
 					DEFAULT: '#3BC68B',

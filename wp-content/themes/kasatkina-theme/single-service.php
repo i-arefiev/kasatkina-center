@@ -86,7 +86,7 @@ get_header();
 					<div class="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-start">
 						<div>
 							<p class="ks-eyebrow">О процедуре</p>
-							<h2 class="mt-3 text-4xl font-extrabold tracking-tight text-ink sm:text-5xl">Что такое <?php echo esc_html( mb_strtolower( get_the_title() ) ); ?></h2>
+							<h2 class="mt-3 text-4xl font-extrabold tracking-tight text-ink sm:text-5xl">Что такое <?php echo esc_html( kasatkina_lcfirst( get_the_title() ) ); ?></h2>
 							<?php if ( get_the_content() ) : ?>
 								<div class="ks-service-media mt-8"><?php the_content(); ?></div>
 							<?php endif; ?>
@@ -190,7 +190,7 @@ get_header();
 						</div>
 						<a href="<?php echo esc_url( kasatkina_services_page_url() ); ?>" class="ks-btn ks-btn--outline">Все услуги</a>
 					</div>
-					<div class="mt-12 grid gap-5 md:grid-cols-3">
+					<div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
 						<?php
 						foreach ( $related->posts as $service ) {
 							echo kasatkina_service_card( $service->ID, 'icon' ); // phpcs:ignore WordPress.Security.EscapeOutput

@@ -189,9 +189,9 @@ function kasatkina_service_card( int $post_id, string $style = 'icon' ): string 
 	}
 
 	return sprintf(
-		'<a href="%1$s" class="group relative flex flex-col rounded-2xl border border-line/60 bg-white p-7 transition hover:-translate-y-1 hover:border-brand hover:shadow-xl hover:shadow-brand/10">
+		'<a href="%1$s" class="group relative flex flex-col rounded-2xl border border-line/60 bg-white p-6 sm:p-7 transition hover:-translate-y-1 hover:border-brand hover:shadow-xl hover:shadow-brand/10">
 			<span class="ks-icon-tile">%2$s</span>
-			<span class="mt-5 text-lg font-bold text-ink">%3$s</span>
+			<span class="mt-5 text-base sm:text-lg font-bold text-ink">%3$s</span>
 			<span class="mt-2 text-sm leading-relaxed text-ink/65">%4$s</span>
 		</a>',
 		esc_url( $url ),
