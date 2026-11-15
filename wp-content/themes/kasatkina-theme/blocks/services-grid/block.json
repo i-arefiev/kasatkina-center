@@ -1,0 +1,46 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kasatkina/services-grid",
+	"title": "Сетка услуг",
+	"category": "kasatkina",
+	"icon": "grid-view",
+	"description": "Карточки услуг из раздела «Услуги». Новые услуги появляются здесь автоматически.",
+	"keywords": [
+		"услуги",
+		"карточки"
+	],
+	"textdomain": "kasatkina",
+	"attributes": {
+		"category": {
+			"type": "string",
+			"default": ""
+		},
+		"limit": {
+			"type": "number",
+			"default": 5
+		},
+		"cardStyle": {
+			"type": "string",
+			"default": "icon"
+		},
+		"showMore": {
+			"type": "boolean",
+			"default": true
+		},
+		"moreTitle": {
+			"type": "string",
+			"default": "Подробнее об услугах"
+		},
+		"moreText": {
+			"type": "string",
+			"default": "и их стоимости"
+		}
+	},
+	"supports": {
+		"html": false,
+		"className": true
+	},
+	"editorScript": "kasatkina-editor-blocks",
+	"render": "file:./render.php"
+}

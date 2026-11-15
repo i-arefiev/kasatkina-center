@@ -1,0 +1,23 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kasatkina/breadcrumbs",
+	"title": "Хлебные крошки",
+	"category": "kasatkina",
+	"icon": "arrow-right-alt2",
+	"description": "Путь до текущей страницы: Главная › Раздел › Страница.",
+	"keywords": [
+		"крошки",
+		"навигация"
+	],
+	"textdomain": "kasatkina",
+	"usesContext": [
+		"postId"
+	],
+	"supports": {
+		"html": false,
+		"className": true
+	},
+	"editorScript": "kasatkina-editor-blocks",
+	"render": "file:./render.php"
+}

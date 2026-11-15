@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kasatkina/contact-info",
+	"title": "Контактные данные",
+	"category": "kasatkina",
+	"icon": "location",
+	"description": "Адрес, телефоны и почта из «Внешний вид → Настроить → Контакты и общие тексты».",
+	"keywords": [
+		"контакты",
+		"адрес",
+		"телефон"
+	],
+	"textdomain": "kasatkina",
+	"supports": {
+		"html": false,
+		"className": true
+	},
+	"editorScript": "kasatkina-editor-blocks",
+	"render": "file:./render.php"
+}

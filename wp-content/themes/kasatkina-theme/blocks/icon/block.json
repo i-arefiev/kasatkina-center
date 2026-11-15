@@ -1,0 +1,31 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kasatkina/icon",
+	"title": "Иконка",
+	"category": "kasatkina",
+	"icon": "star-filled",
+	"description": "Иконка из набора темы. Выберите картинку в боковой панели.",
+	"keywords": [
+		"иконка",
+		"значок",
+		"icon"
+	],
+	"textdomain": "kasatkina",
+	"attributes": {
+		"icon": {
+			"type": "string",
+			"default": "sparkles"
+		},
+		"size": {
+			"type": "number",
+			"default": 24
+		}
+	},
+	"supports": {
+		"html": false,
+		"className": true
+	},
+	"editorScript": "kasatkina-editor-blocks",
+	"render": "file:./render.php"
+}

@@ -1,0 +1,26 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kasatkina/map",
+	"title": "Карта",
+	"category": "kasatkina",
+	"icon": "location-alt",
+	"description": "Яндекс.Карта. Ссылка задаётся в «Внешний вид → Настроить → Контакты и общие тексты».",
+	"keywords": [
+		"карта",
+		"яндекс"
+	],
+	"textdomain": "kasatkina",
+	"attributes": {
+		"height": {
+			"type": "number",
+			"default": 500
+		}
+	},
+	"supports": {
+		"html": false,
+		"className": true
+	},
+	"editorScript": "kasatkina-editor-blocks",
+	"render": "file:./render.php"
+}

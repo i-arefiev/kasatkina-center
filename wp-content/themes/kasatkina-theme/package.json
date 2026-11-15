@@ -1,0 +1,14 @@
+{
+	"name": "kasatkina-theme",
+	"private": true,
+	"description": "Сборка стилей темы сайта центра доктора Касаткиной",
+	"scripts": {
+		"build": "tailwindcss -i ./src/main.css -o ./assets/css/main.css --minify",
+		"watch": "tailwindcss -i ./src/main.css -o ./assets/css/main.css --watch",
+		"patterns": "python3 src/build-patterns.py patterns",
+		"zip": "npm run build && cd .. && rm -f kasatkina-theme.zip && zip -rq kasatkina-theme.zip kasatkina-theme -x 'kasatkina-theme/node_modules/*' 'kasatkina-theme/src/*' 'kasatkina-theme/package*.json' 'kasatkina-theme/tailwind.config.js' '*.DS_Store'"
+	},
+	"devDependencies": {
+		"tailwindcss": "3.4.17"
+	}
+}

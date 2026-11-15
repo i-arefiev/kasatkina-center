@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kasatkina/license-note",
+	"title": "Лицензия",
+	"category": "kasatkina",
+	"icon": "shield",
+	"description": "Плашка с текстом о лицензии из настроек сайта.",
+	"keywords": [
+		"лицензия"
+	],
+	"textdomain": "kasatkina",
+	"supports": {
+		"html": false,
+		"className": true
+	},
+	"editorScript": "kasatkina-editor-blocks",
+	"render": "file:./render.php"
+}

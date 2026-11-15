@@ -1,43 +1,30 @@
 <?php
-get_header(); // Подключает header.php
+/**
+ * Обычная текстовая страница (политика конфиденциальности, оферта и т. п.):
+ * хлебные крошки, заголовок и текст из редактора.
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+get_header();
 ?>
-
-    <main class="min-h-screen bg-white py-10 lg:py-16">
-        <div class="mx-auto max-w-7xl px-6">
-
-            <!-- 1. Хлебные крошки (Breadcrumbs) -->
-            <nav class="mb-6 flex items-center gap-2 text-xs text-[#1E293B]/60" aria-label="Breadcrumb">
-                <?php
-                if ( function_exists( 'bcn_display' ) ) {
-                    bcn_display();
-                } else {
-                    ?>
-                    <a href="<?php echo esc_url( home_url('/') ); ?>" class="transition hover:text-[#3BC68B]">Главная</a>
-                    <span>/</span>
-                    <span class="font-medium text-[#1E293B]"><?php the_title(); ?></span>
-                <?php } ?>
-            </nav>
-
-            <!-- 2. Стандартный заголовок внутренней страницы (H1) -->
-            <header class="mb-10 border-b border-[rgb(192,192,192)]/40 pb-6">
-                <h1 class="text-3xl font-extrabold tracking-tight text-[#1E293B] sm:text-4xl lg:text-5xl">
-                    <?php the_title(); ?>
-                </h1>
-            </header>
-
-            <!-- 3. Контент страницы (собирается из любых Паттернов или обычного текста) -->
-            <article class="prose max-w-none text-[#1E293B]">
-                <?php
-                while ( have_posts() ) :
-                    the_post();
-                    the_content();
-                endwhile;
-                ?>
-            </article>
-
-        </div>
-    </main>
-
+<main id="main">
+	<?php while ( have_posts() ) : the_post(); ?>
+		<section class="ks-glow-tr border-b border-line/30">
+			<div class="mx-auto max-w-4xl px-6 py-12 lg:py-16">
+				<?php echo kasatkina_breadcrumbs(); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+				<h1 class="mt-6 text-4xl font-extrabold leading-tight tracking-tight text-ink sm:text-5xl"><?php the_title(); ?></h1>
+				<?php if ( has_excerpt() ) : ?>
+					<p class="mt-5 max-w-2xl text-lg leading-relaxed text-ink/70"><?php echo esc_html( get_the_excerpt() ); ?></p>
+				<?php endif; ?>
+			</div>
+		</section>
+		<article class="mx-auto max-w-4xl px-6 py-14">
+			<div class="ks-prose">
+				<?php the_content(); ?>
+			</div>
+		</article>
+	<?php endwhile; ?>
+</main>
 <?php
-get_footer(); // Подключает footer.php
-?>
+get_footer();

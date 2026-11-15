@@ -1,22 +1,23 @@
 <?php
-/*
-Template Name: Страница-конструктор (Без H1 и контейнеров)
-Template Post Type: page
-*/
+/**
+ * Template Name: Конструктор (страница из блоков)
+ * Template Post Type: page
+ *
+ * Страница целиком собирается из блоков: без автоматического заголовка и полей.
+ * Подходит для страниц «О медцентре», «Руководитель» и любых посадочных страниц.
+ */
 
-get_header(); // Подключаем шапку
+defined( 'ABSPATH' ) || exit;
+
+get_header();
 ?>
-
-    <main class="min-h-screen bg-white">
-        <?php
-        while ( have_posts() ) :
-            the_post();
-            // Выводит только паттерны/блоки, без системных H1 и хлебных крошек
-            the_content();
-        endwhile;
-        ?>
-    </main>
-
+<main id="main">
+	<?php
+	while ( have_posts() ) :
+		the_post();
+		the_content();
+	endwhile;
+	?>
+</main>
 <?php
-get_footer(); // Подключаем подвал
-?>
+get_footer();

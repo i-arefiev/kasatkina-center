@@ -1,11 +1,25 @@
 <?php
+/**
+ * Главная страница: целиком собирается из блоков в редакторе.
+ * Если в «Настройки → Чтение» главной назначен список записей — выводится home.php.
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+if ( 'posts' === get_option( 'show_on_front' ) ) {
+	require get_home_template();
+	return;
+}
+
 get_header();
-
-// Выводит все блоки (Hero, Услуги и т.д.), добавленные на Главную страницу в админке
-if ( have_posts() ) :
-    while ( have_posts() ) : the_post();
-        the_content();
-    endwhile;
-endif;
-
+?>
+<main id="main">
+	<?php
+	while ( have_posts() ) :
+		the_post();
+		the_content();
+	endwhile;
+	?>
+</main>
+<?php
 get_footer();
