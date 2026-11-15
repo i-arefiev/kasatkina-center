@@ -164,7 +164,7 @@ def pattern(slug, title, category='kasatkina', keywords='', description=''):
 @pattern('home-hero', 'Главный экран (главная)', keywords='главный, hero, первый экран', description='Первый экран: заголовок, кнопка записи, цифры и фото врача.')
 def home_hero():
     stats = group([group([p(n, 'm-0 text-2xl font-bold text-brand'), p(t, 'm-0 text-xs text-ink/60')]) for n, t in
-                   (('15+', 'лет опыта'), ('5000+', 'пациентов'), ('100%', 'инд. подход'))],
+                   (('15+', 'лет опыта'), ('250+', 'пациентов'), ('100%', 'инд. подход'))],
                   'mt-10 grid max-w-md grid-cols-3 gap-4 border-t border-line/50 pt-6')
     left = group([
         badge('shield-check', 'Лицензия Л041‑01157‑39/00638809'),
