@@ -35,7 +35,8 @@
 	 * Колонки сеток и контейнеры секций — «контейнеры» для единиц cqi:
 	 * крупные заголовки (text-3xl…6xl, см. tailwind.config.js) не шире своей колонки.
 	 */
-	.grid > *,
+	/* Кнопки и иконки — по размеру содержимого (колонки «auto»), поэтому не контейнеры. */
+	.grid > :not(.wp-block-buttons):not(.wp-block-kasatkina-icon),
 	.mx-auto[class*='max-w-'] {
 		container-type: inline-size;
 	}
@@ -145,6 +146,34 @@
 		background-position: center;
 		background-size: 14px;
 		background-repeat: no-repeat;
+	}
+
+	/* «Круглая кнопка play» — большой зелёный круг, текст ссылки остаётся для экранных чтецов */
+	.wp-block-button.is-style-ks-play .wp-block-button__link {
+		@apply grid h-20 w-20 place-items-center gap-0 rounded-full p-0 text-[0px] shadow-2xl shadow-brand/40 transition hover:scale-105 sm:h-24 sm:w-24;
+	}
+	.wp-block-button.is-style-ks-play .wp-block-button__link::before {
+		content: '';
+		@apply h-8 w-8;
+		background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E") center / contain no-repeat;
+	}
+
+	/* Окно с видео */
+	.ks-video-modal {
+		@apply m-auto w-[min(64rem,calc(100vw-2rem))] max-w-none overflow-visible border-0 bg-transparent p-0;
+	}
+	.ks-video-modal::backdrop {
+		@apply bg-navy/85 backdrop-blur-sm;
+	}
+	.ks-video-modal__frame {
+		@apply aspect-video w-full overflow-hidden rounded-2xl bg-black shadow-2xl sm:rounded-3xl;
+	}
+	.ks-video-modal__frame video,
+	.ks-video-modal__frame iframe {
+		@apply block h-full w-full border-0;
+	}
+	.ks-video-modal__close {
+		@apply absolute -top-12 right-0 grid h-10 w-10 place-items-center rounded-full bg-white/95 text-ink shadow-lg transition hover:bg-white sm:-right-12 sm:top-0;
 	}
 
 	/* ── Списки ───────────────────────────────────────────────── */

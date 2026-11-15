@@ -13,6 +13,7 @@
 defined( 'ABSPATH' ) || exit;
 
 $img = get_theme_file_uri( 'assets/images/' );
+$vid = get_theme_file_uri( 'assets/video/' );
 ?>
 <!-- wp:group {"tagName":"section","anchor":"education","className":"scroll-mt-24 border-b border-line/60 py-16 lg:py-20","layout":{"type":"default"}} -->
 <section id="education" class="wp-block-group scroll-mt-24 border-b border-line/60 py-16 lg:py-20">

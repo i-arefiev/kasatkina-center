@@ -32,8 +32,8 @@ function kasatkina_site_pages(): array {
 		),
 		'leader'   => array(
 			'title'    => 'Наталия Николаевна Касаткина',
-			'path'     => 'about/leader',
-			'parent'   => 'about',
+			'path'     => 'leader',
+			'legacy'   => 'about/leader', // так страница называлась в бета-версии — переносим на /leader/, как на старом сайте
 			'template' => 'template-builder.php',
 			'patterns' => array( 'kasatkina/leader-hero', 'kasatkina/leader-education', 'kasatkina/leader-diplomas', 'kasatkina/leader-approach', 'kasatkina/leader-specialization', 'kasatkina/booking' ),
 		),
@@ -67,14 +67,18 @@ function kasatkina_import_theme_images(): array {
 	require_once ABSPATH . 'wp-admin/includes/media.php';
 	require_once ABSPATH . 'wp-admin/includes/image.php';
 
-	$base     = KASATKINA_DIR . '/assets/images/';
 	$imported = get_option( 'kasatkina_imported_images', array() );
 	$map      = array();
 
+	foreach ( array( 'images' => '', 'video' => 'video/' ) as $dir => $prefix ) {
+	$base  = KASATKINA_DIR . '/assets/' . $dir . '/';
+	if ( ! is_dir( $base ) ) {
+		continue;
+	}
 	$files = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $base, FilesystemIterator::SKIP_DOTS ) );
 	foreach ( $files as $file ) {
-		$rel = str_replace( $base, '', $file->getPathname() );
-		if ( ! preg_match( '/\.(png|jpe?g|webp|svg)$/i', $rel ) ) {
+		$rel = $prefix . str_replace( $base, '', $file->getPathname() );
+		if ( ! preg_match( '/\.(png|jpe?g|webp|svg|mp4|webm)$/i', $rel ) ) {
 			continue;
 		}
 
@@ -89,7 +93,8 @@ function kasatkina_import_theme_images(): array {
 			}
 			$imported[ $rel ] = $id;
 		}
-		$map[ KASATKINA_URI . '/assets/images/' . $rel ] = wp_get_attachment_url( $id );
+		$map[ KASATKINA_URI . '/assets/' . ( $prefix ? $dir . '/' . substr( $rel, strlen( $prefix ) ) : 'images/' . $rel ) ] = wp_get_attachment_url( $id );
+	}
 	}
 
 	update_option( 'kasatkina_imported_images', $imported, false );
@@ -130,6 +135,16 @@ function kasatkina_run_site_setup( array $opts ): array {
 			$existing = get_post( (int) get_option( 'page_on_front' ) );
 		}
 		$existing = $existing ?: get_page_by_path( $page['path'] );
+
+		// Страница из бета-версии по старому адресу — переносим на новый.
+		if ( ! $existing && ! empty( $page['legacy'] ) ) {
+			$legacy = get_page_by_path( $page['legacy'] );
+			if ( $legacy ) {
+				wp_update_post( array( 'ID' => $legacy->ID, 'post_parent' => 0, 'post_name' => basename( $page['path'] ) ) );
+				$existing = get_post( $legacy->ID );
+				$log[]    = sprintf( '«%s» — перенесена с /%s/ на /%s/.', $legacy->post_title, $page['legacy'], $page['path'] );
+			}
+		}
 
 		$content = isset( $page['patterns'] ) ? kasatkina_build_content( $page['patterns'], $image_map ) : ( $page['content'] ?? '' );
 		$data    = array(
@@ -174,11 +189,14 @@ function kasatkina_run_site_setup( array $opts ): array {
 		if ( ! empty( $ids['articles'] ) ) {
 			update_option( 'page_for_posts', $ids['articles'] );
 		}
-		if ( ! get_option( 'permalink_structure' ) ) {
-			update_option( 'permalink_structure', '/%postname%/' );
+		// Статьи — по адресу /articles/<ярлык>/, как на старом сайте.
+		// set_permalink_structure() обновляет и настройку, и правила в памяти — иначе flush пересоберёт старые.
+		global $wp_rewrite;
+		if ( in_array( get_option( 'permalink_structure' ), array( '', '/%postname%/' ), true ) ) {
+			$wp_rewrite->set_permalink_structure( '/articles/%postname%/' );
 		}
 		flush_rewrite_rules();
-		$log[] = 'Главная страница, страница статей и постоянные ссылки настроены.';
+		$log[] = 'Главная страница, страница статей и постоянные ссылки (/articles/…/) настроены.';
 	}
 
 	if ( ! empty( $opts['menu'] ) ) {

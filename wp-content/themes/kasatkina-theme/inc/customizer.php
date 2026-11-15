@@ -15,6 +15,7 @@ function kasatkina_option_fields(): array {
 		'address'      => array( 'Адрес', 'г. Калининград, ул. Уральская, д. 20, пом. 4', 'text' ),
 		'phone'        => array( 'Основной телефон', '+7 (921) 102-46-86', 'text' ),
 		'phone2'       => array( 'Дополнительный телефон (можно оставить пустым)', '+7 (4012) 52-66-99', 'text' ),
+		'hours'        => array( 'Часы работы (например: Пн–Пт 9:00–20:00, Сб 10:00–15:00). Пусто — не показывать', '', 'text' ),
 		'email'        => array( 'Электронная почта', 'info@kasatkina-center.ru', 'email' ),
 		'license'      => array( 'Текст о лицензии (подвал, формы записи)', 'Медицинская лицензия Л041-01157-39/00638809 от 25.01.2023 г. Имеются противопоказания, необходима консультация специалиста.', 'textarea' ),
 		'map_url'      => array( 'Ссылка для карты (Яндекс.Карты → Поделиться → Встроить карту → адрес из src="…")', 'https://yandex.ru/map-widget/v1/?ll=20.556%2C54.708&z=15&pt=20.556,54.708,pm2rdm', 'url' ),
@@ -25,7 +26,7 @@ function kasatkina_option_fields(): array {
 		'copyright'    => array( 'Подвал: строка копирайта (год подставляется автоматически)', 'Центр доктора Касаткиной. При использовании материалов ссылка на ресурс kasatkina-center.ru обязательна.', 'textarea' ),
 		'author_name'  => array( 'Статьи: автор по умолчанию', 'Наталия Николаевна Касаткина', 'text' ),
 		'author_bio'   => array( 'Статьи: текст «Об авторе» (если в профиле пользователя пусто)', 'Врач-физиотерапевт, психолог-консультант. Основатель Центра физиолечения и психоконсультирования в Калининграде.', 'textarea' ),
-		'author_url'   => array( 'Статьи: ссылка «Подробнее об авторе»', '/about/leader/', 'text' ),
+		'author_url'   => array( 'Статьи: ссылка «Подробнее об авторе»', '/leader/', 'text' ),
 	);
 }
 
@@ -33,7 +34,7 @@ function kasatkina_option_fields(): array {
  * Значение настройки (или значение по умолчанию).
  */
 function kasatkina_opt( string $key ): string {
-	$fields  = kasatkina_option_fields();
+	$fields  = kasatkina_option_fields() + kasatkina_seo_fields();
 	$default = $fields[ $key ][1] ?? '';
 	return (string) get_theme_mod( 'ks_' . $key, $default );
 }
@@ -62,7 +63,16 @@ add_action( 'customize_register', function ( WP_Customize_Manager $wp_customize 
 		'priority'    => 30,
 	) );
 
-	foreach ( kasatkina_option_fields() as $key => [ $label, $default, $type ] ) {
+	$wp_customize->add_section( 'kasatkina_seo', array(
+		'title'       => 'Аналитика и вебмастера',
+		'description' => 'Счётчики и коды подтверждения. Файлы подтверждения Яндекса и Google со старого сайта уже подключены темой (папка verification/).',
+		'priority'    => 31,
+	) );
+
+	$all = array_map( fn( $f ) => $f + array( 3 => 'kasatkina_contacts' ), kasatkina_option_fields() )
+		+ array_map( fn( $f ) => $f + array( 3 => 'kasatkina_seo' ), kasatkina_seo_fields() );
+
+	foreach ( $all as $key => [ $label, $default, $type, $section ] ) {
 		$sanitize = match ( $type ) {
 			'email'    => 'sanitize_email',
 			'url'      => 'esc_url_raw',
@@ -75,7 +85,7 @@ add_action( 'customize_register', function ( WP_Customize_Manager $wp_customize 
 		) );
 		$wp_customize->add_control( 'ks_' . $key, array(
 			'label'   => $label,
-			'section' => 'kasatkina_contacts',
+			'section' => $section,
 			'type'    => $type,
 		) );
 	}

@@ -13,6 +13,7 @@
 defined( 'ABSPATH' ) || exit;
 
 $img = get_theme_file_uri( 'assets/images/' );
+$vid = get_theme_file_uri( 'assets/video/' );
 ?>
 <!-- wp:group {"tagName":"section","anchor":"home","className":"ks-glow-tr relative overflow-hidden bg-white","layout":{"type":"default"}} -->
 <section id="home" class="wp-block-group ks-glow-tr relative overflow-hidden bg-white">
@@ -38,6 +39,9 @@ $img = get_theme_file_uri( 'assets/images/' );
 			<div class="wp-block-buttons mt-8">
 				<!-- wp:button {"className":"is-style-ks-primary"} -->
 				<div class="wp-block-button is-style-ks-primary"><a class="wp-block-button__link wp-element-button" href="#contacts">Записаться на консультацию</a></div>
+				<!-- /wp:button -->
+				<!-- wp:button {"className":"is-style-ks-video"} -->
+				<div class="wp-block-button is-style-ks-video"><a class="wp-block-button__link wp-element-button" href="<?php echo esc_url( $vid ); ?>promo.mp4">Смотреть видео о центре</a></div>
 				<!-- /wp:button -->
 			</div>
 			<!-- /wp:buttons -->

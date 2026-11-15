@@ -33,7 +33,9 @@ add_action( 'init', function () {
 	register_block_style( 'core/button', array( 'name' => 'ks-primary', 'label' => 'Зелёная со стрелкой' ) );
 	register_block_style( 'core/button', array( 'name' => 'ks-solid', 'label' => 'Зелёная' ) );
 	register_block_style( 'core/button', array( 'name' => 'ks-outline', 'label' => 'Контурная' ) );
+	// Кнопки «Видео»: ссылка на .mp4 из медиатеки, YouTube, Rutube или VK — видео откроется в окне.
 	register_block_style( 'core/button', array( 'name' => 'ks-video', 'label' => 'Видео (со значком play)' ) );
+	register_block_style( 'core/button', array( 'name' => 'ks-play', 'label' => 'Видео: круглая кнопка play' ) );
 
 	// Стили списков.
 	register_block_style( 'core/list', array( 'name' => 'ks-checklist', 'label' => 'Галочки в карточках' ) );

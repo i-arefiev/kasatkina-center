@@ -6,6 +6,7 @@ from pathlib import Path
 
 OUT = Path(sys.argv[1])
 IMG = '<?php echo esc_url( $img ); ?>'
+VID = '<?php echo esc_url( $vid ); ?>'
 HOME = '<?php echo esc_url( home_url( "/" ) ); ?>'
 
 
@@ -170,7 +171,7 @@ def home_hero():
         badge('shield-check', 'Лицензия Л041‑01157‑39/00638809'),
         h('Центр физиолечения и ' + m('психоконсультирования') + ' доктора Касаткиной', 1, 'ks-hero-title mt-6 font-extrabold tracking-tight text-ink'),
         p('Поддерживающие процедуры для комплексного безопасного лечения и восстановления организма после болезней и травм.', 'mt-6 max-w-xl text-lg leading-relaxed text-ink/70'),
-        buttons([button('Записаться на консультацию', '#contacts')], 'mt-8'),
+        buttons([button('Записаться на консультацию', '#contacts'), button('Смотреть видео о центре', VID + 'promo.mp4', 'ks-video')], 'mt-8'),
         stats,
     ], 'ks-hero-text')
     right = group([
@@ -187,7 +188,13 @@ def services():
         group([eyebrow('Услуги'), h('Наши услуги', 2, 'mt-3 text-4xl font-extrabold tracking-tight text-ink sm:text-5xl')]),
         p('В нашем центре Вы можете записаться на процедуры, направленные на лечение и профилактику различных заболеваний: физиотерапевтическое воздействие теплом, электрическим током, магнитными полями, лазером и другими физическими факторами.', 'm-0 text-base leading-relaxed text-ink/70'),
     ], 'grid gap-6 lg:grid-cols-[1fr_1.2fr] lg:items-end lg:gap-10')
-    return group([container([head, block('services-grid', {'className': 'mt-12'})])],
+    video = group([
+        group([eyebrow('Видео о центре', 'text-xs'),
+               p('Экскурсия по центру доктора Касаткиной', 'mt-2 text-2xl font-bold text-ink sm:text-3xl'),
+               p('Познакомьтесь с оборудованием, командой и атмосферой нашего центра.', 'mt-3 max-w-lg text-sm text-ink/70')]),
+        buttons([button('Смотреть видео о центре', VID + 'promo.mp4', 'ks-play')]),
+    ], 'mt-12 grid gap-6 overflow-hidden rounded-3xl border border-line/60 bg-gradient-to-br from-brand-soft via-white to-brand-soft p-8 sm:grid-cols-[1fr_auto] sm:items-center sm:p-12')
+    return group([container([head, video, block('services-grid', {'className': 'mt-10'})])],
                  'scroll-mt-24 border-t border-line/30 bg-white py-20', 'section', 'services')
 
 
@@ -345,7 +352,7 @@ def licenses():
             h('Наталия Николаевна ' + m('Касаткина'), 3, 'mt-4 text-2xl font-extrabold leading-tight text-white'),
             p('Врач-физиотерапевт, психолог. Опыт практики более 15 лет.', 'mt-3 text-sm leading-relaxed text-white/70'),
         ]),
-        buttons([button('Подробнее о руководителе', HOME + 'about/leader/', 'ks-solid')], 'mt-8 border-t border-white/10 pt-5'),
+        buttons([button('Подробнее о руководителе', HOME + 'leader/', 'ks-solid')], 'mt-8 border-t border-white/10 pt-5'),
     ], 'flex flex-col justify-between rounded-2xl bg-navy p-7 text-white')
     grid = group([
         doc('Лицензия Л041-01157-39/00638809', 'от 25.01.2023 г.', 'Минздрав Калининградской области', 'academic'),
@@ -479,6 +486,7 @@ HEADER = '''<?php
 defined( 'ABSPATH' ) || exit;
 
 $img = get_theme_file_uri( 'assets/images/' );
+$vid = get_theme_file_uri( 'assets/video/' );
 ?>
 '''
 

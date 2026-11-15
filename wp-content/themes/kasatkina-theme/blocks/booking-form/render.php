@@ -40,6 +40,7 @@ if ( $attributes['showService'] ) {
 			<?php echo kasatkina_icon( 'check', 20, 'text-brand' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 			<span><strong>Заявка отправлена.</strong> Мы свяжемся с Вами в течение рабочего дня.</span>
 		</div>
+		<script>window.addEventListener('load',function(){if(window.ym&&window.kasatkinaMetrika){ym(window.kasatkinaMetrika,'reachGoal','booking_sent');}});</script>
 	<?php else : ?>
 		<?php if ( $error ) : ?>
 			<div class="mt-5 rounded-xl border border-red-300 bg-red-50 p-4 text-sm text-red-800" role="alert">

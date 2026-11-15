@@ -13,6 +13,7 @@
 defined( 'ABSPATH' ) || exit;
 
 $img = get_theme_file_uri( 'assets/images/' );
+$vid = get_theme_file_uri( 'assets/video/' );
 ?>
 <!-- wp:group {"tagName":"section","anchor":"licenses","className":"scroll-mt-24 border-b border-line/30 bg-white py-20","layout":{"type":"default"}} -->
 <section id="licenses" class="wp-block-group scroll-mt-24 border-b border-line/30 bg-white py-20">
@@ -115,7 +116,7 @@ $img = get_theme_file_uri( 'assets/images/' );
 				<!-- wp:buttons {"className":"mt-8 border-t border-white/10 pt-5"} -->
 				<div class="wp-block-buttons mt-8 border-t border-white/10 pt-5">
 					<!-- wp:button {"className":"is-style-ks-solid"} -->
-					<div class="wp-block-button is-style-ks-solid"><a class="wp-block-button__link wp-element-button" href="<?php echo esc_url( home_url( "/" ) ); ?>about/leader/">Подробнее о руководителе</a></div>
+					<div class="wp-block-button is-style-ks-solid"><a class="wp-block-button__link wp-element-button" href="<?php echo esc_url( home_url( "/" ) ); ?>leader/">Подробнее о руководителе</a></div>
 					<!-- /wp:button -->
 				</div>
 				<!-- /wp:buttons -->

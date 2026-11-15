@@ -10,6 +10,7 @@
  *   services.php      — тип записей «Услуги», категории и поля карточки
  *   requests.php      — приём заявок с форм (раздел «Заявки» в админке + письмо на почту)
  *   blocks.php        — собственные блоки темы, стили блоков, категория паттернов
+ *   seo.php           — Метрика, вебмастера, разметка организации, мета-описание, адреса статей
  *   site-setup.php    — страница «Внешний вид → Настройка сайта» (создание страниц из паттернов)
  *   admin-help.php    — подсказки для администратора в консоли
  */
@@ -20,6 +21,6 @@ define( 'KASATKINA_VERSION', '2.0.0' );
 define( 'KASATKINA_DIR', get_template_directory() );
 define( 'KASATKINA_URI', get_template_directory_uri() );
 
-foreach ( array( 'setup', 'icons', 'customizer', 'template-tags', 'services', 'requests', 'blocks', 'site-setup', 'admin-help' ) as $kasatkina_file ) {
+foreach ( array( 'setup', 'icons', 'customizer', 'template-tags', 'services', 'requests', 'blocks', 'seo', 'site-setup', 'admin-help' ) as $kasatkina_file ) {
 	require_once KASATKINA_DIR . '/inc/' . $kasatkina_file . '.php';
 }

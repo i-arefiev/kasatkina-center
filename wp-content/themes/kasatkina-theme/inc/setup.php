@@ -60,6 +60,19 @@ add_filter( 'nav_menu_link_attributes', function ( $atts, $item, $args ) {
 	return $atts;
 }, 10, 3 );
 
+/**
+ * Окно для видео. Открывается кнопкой со стилем «Видео» (или любой ссылкой с классом ks-video-link),
+ * если ссылка ведёт на файл .mp4/.webm, YouTube, Rutube или VK Видео.
+ */
+add_action( 'wp_footer', function () {
+	?>
+	<dialog id="ks-video-modal" class="ks-video-modal" aria-label="Видео">
+		<button type="button" class="ks-video-modal__close" data-ks-video-close aria-label="Закрыть видео"><?php echo kasatkina_icon( 'close', 22 ); // phpcs:ignore WordPress.Security.EscapeOutput ?></button>
+		<div class="ks-video-modal__frame" data-ks-video-frame></div>
+	</dialog>
+	<?php
+} );
+
 // Отрывок покороче и без «[...]».
 add_filter( 'excerpt_length', fn() => 24 );
 add_filter( 'excerpt_more', fn() => '…' );
