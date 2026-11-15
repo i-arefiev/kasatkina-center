@@ -167,17 +167,17 @@ def home_hero():
                    (('15+', 'лет опыта'), ('5000+', 'пациентов'), ('100%', 'инд. подход'))],
                   'mt-10 grid max-w-md grid-cols-3 gap-4 border-t border-line/50 pt-6')
     left = group([
-        badge('shield-check', 'Медицинская лицензия Л041-01157-39/00638809'),
-        h('Центр физиолечения и ' + m('психоконсультирования') + ' доктора Касаткиной', 1, 'mt-6 text-4xl font-extrabold leading-[1.1] tracking-tight text-ink sm:text-5xl lg:text-6xl'),
+        badge('shield-check', 'Лицензия Л041‑01157‑39/00638809'),
+        h('Центр физиолечения и ' + m('психоконсультирования') + ' доктора Касаткиной', 1, 'ks-hero-title mt-6 font-extrabold tracking-tight text-ink'),
         p('Поддерживающие процедуры для комплексного безопасного лечения и восстановления организма после болезней и травм.', 'mt-6 max-w-xl text-lg leading-relaxed text-ink/70'),
         buttons([button('Записаться на консультацию', '#contacts')], 'mt-8'),
         stats,
-    ])
+    ], 'ks-hero-text')
     right = group([
         img('doctor.png', 'Доктор Наталия Николаевна Касаткина', 'ks-img-contain relative z-10 m-0 drop-shadow-2xl'),
-        float_badge('academic', 'Опыт и индивидуальный подход', 'к каждому пациенту', 'absolute -left-4 bottom-6 z-20 max-w-[240px]'),
-    ], 'ks-blob relative mx-auto w-full max-w-lg')
-    return group([container([left, right], 'mx-auto grid max-w-7xl items-center gap-12 px-6 py-16 lg:grid-cols-2 lg:py-24')],
+        float_badge('academic', 'Индивидуальный подход', 'к каждому пациенту', 'absolute -left-4 bottom-6 z-20'),
+    ], 'ks-blob relative mx-auto w-full max-w-[17rem] sm:max-w-sm lg:max-w-lg')
+    return group([container([left, right], 'mx-auto grid max-w-7xl items-center gap-10 px-6 pb-12 pt-10 sm:py-16 lg:grid-cols-[1.3fr_1fr] lg:gap-12 lg:py-24')],
                  'ks-glow-tr relative overflow-hidden bg-white', 'section', 'home')
 
 
@@ -260,16 +260,16 @@ def contacts():
 def about_hero():
     left = group([
         badge('sparkles', 'Безопасное восстановление здоровья'),
-        h('Центр физиолечения и ' + m('психоконсультирования') + ' в Калининграде', 1, 'mt-6 text-4xl font-extrabold leading-[1.1] tracking-tight text-ink sm:text-5xl lg:text-6xl'),
+        h('Центр физиолечения и ' + m('психоконсультирования') + ' в Калининграде', 1, 'ks-hero-title mt-6 font-extrabold tracking-tight text-ink'),
         p('Профессиональная физиотерапевтическая помощь и психологическая поддержка в уютной атмосфере без стресса и очередей.', 'mt-6 max-w-xl text-lg leading-relaxed text-ink/70'),
         buttons([button('Записаться на консультацию', '#booking'), button('О нашей миссии', '#mission', 'ks-outline')], 'mt-8'),
-    ])
+    ], 'ks-hero-text')
     right = group([
-        img('center-inside.jpg', 'Кабинет центра доктора Касаткиной', 'ks-img-fill m-0 h-[420px] overflow-hidden rounded-[2rem] border border-line/60 shadow-xl shadow-brand/10 sm:h-[520px]'),
+        img('center-inside.jpg', 'Кабинет центра доктора Касаткиной', 'ks-img-fill m-0 h-72 overflow-hidden rounded-[2rem] border border-line/60 shadow-xl shadow-brand/10 sm:h-[420px] lg:h-[520px]'),
         float_badge('badge-check', 'Лицензия Минздрава', 'с 2023 года', 'absolute -left-4 bottom-8 sm:-left-6'),
     ], 'relative')
-    grid = group([left, right], 'mt-8 grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]')
-    return group([container([block('breadcrumbs'), grid])], 'ks-glow-tr relative overflow-hidden border-b border-line/30 bg-white py-12 lg:py-20', 'section')
+    grid = group([left, right], 'mt-8 grid items-center gap-10 lg:grid-cols-[1.25fr_1fr] lg:gap-12')
+    return group([container([block('breadcrumbs'), grid])], 'ks-glow-tr relative overflow-hidden border-b border-line/30 bg-white py-10 lg:py-20', 'section')
 
 
 @pattern('mission', 'Наша миссия (фото и преимущества)', keywords='миссия, преимущества, фото', description='Сетка из 4 фото, текст о миссии и 4 карточки преимуществ.')

@@ -36,11 +36,11 @@ get_header();
 			<div class="mx-auto max-w-7xl px-6 py-12 lg:py-20">
 				<?php echo kasatkina_breadcrumbs(); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 
-				<div class="mt-8 grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
-					<div>
+				<div class="mt-8 grid items-center gap-10 lg:grid-cols-[1.25fr_1fr] lg:gap-12">
+					<div class="ks-hero-text">
 						<?php $terms = get_the_terms( $id, 'service_category' ); ?>
 						<span class="ks-badge"><?php echo kasatkina_icon( 'sparkles', 14 ); // phpcs:ignore WordPress.Security.EscapeOutput ?> <?php echo esc_html( $terms && ! is_wp_error( $terms ) ? $terms[0]->name : 'Услуга центра' ); ?></span>
-						<h1 class="mt-6 text-4xl font-extrabold leading-[1.1] tracking-tight text-ink sm:text-5xl">
+						<h1 class="ks-hero-title ks-hero-title--sm mt-6 font-extrabold tracking-tight text-ink">
 							<?php the_title(); ?> <span class="text-brand">в Калининграде</span>
 						</h1>
 						<?php if ( has_excerpt() ) : ?>

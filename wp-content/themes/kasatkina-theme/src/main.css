@@ -21,18 +21,11 @@
 	mark.has-inline-color {
 		background-color: transparent;
 	}
-	/* Длинные слова («психоконсультирования») переносятся, а не вылезают за экран на телефоне. */
+	/* Страховка: слово, которое совсем не помещается, не вылезает за экран. */
 	h1,
 	h2,
 	h3 {
 		overflow-wrap: break-word;
-	}
-	@media (max-width: 639px) {
-		h1,
-		h2,
-		h3 {
-			hyphens: auto;
-		}
 	}
 	/* Колонки сеток могут сжиматься уже своего содержимого. */
 	.grid > * {
@@ -68,6 +61,28 @@
 	}
 	.ks-card {
 		@apply rounded-2xl border border-line/60 bg-white p-7 transition hover:-translate-y-1 hover:border-brand hover:shadow-xl hover:shadow-brand/10;
+	}
+
+	/* ── Заголовок первого экрана ─────────────────────────────── */
+	/*
+	 * Размер шрифта подстраивается под ширину колонки (container query units),
+	 * чтобы самое длинное слово («психоконсультирования» ≈ 12 размеров шрифта)
+	 * всегда помещалось целиком — без переносов и разрывов слов.
+	 */
+	.ks-hero-text {
+		container-type: inline-size;
+	}
+	.ks-hero-title {
+		font-size: 2.25rem;
+		font-size: clamp(1.375rem, 8cqi, 3.75rem);
+		line-height: 1.08;
+	}
+	.ks-hero-title--sm {
+		font-size: clamp(1.375rem, 8cqi, 3rem);
+	}
+	/* Текст плашки не рвётся посреди номера. */
+	.ks-badge p {
+		text-wrap: balance;
 	}
 
 	/* ── Иконки ───────────────────────────────────────────────── */

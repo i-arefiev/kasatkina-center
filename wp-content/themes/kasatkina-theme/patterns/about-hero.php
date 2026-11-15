@@ -14,15 +14,15 @@ defined( 'ABSPATH' ) || exit;
 
 $img = get_theme_file_uri( 'assets/images/' );
 ?>
-<!-- wp:group {"tagName":"section","className":"ks-glow-tr relative overflow-hidden border-b border-line/30 bg-white py-12 lg:py-20","layout":{"type":"default"}} -->
-<section class="wp-block-group ks-glow-tr relative overflow-hidden border-b border-line/30 bg-white py-12 lg:py-20">
+<!-- wp:group {"tagName":"section","className":"ks-glow-tr relative overflow-hidden border-b border-line/30 bg-white py-10 lg:py-20","layout":{"type":"default"}} -->
+<section class="wp-block-group ks-glow-tr relative overflow-hidden border-b border-line/30 bg-white py-10 lg:py-20">
 	<!-- wp:group {"className":"mx-auto max-w-7xl px-6","layout":{"type":"default"}} -->
 	<div class="wp-block-group mx-auto max-w-7xl px-6">
 		<!-- wp:kasatkina/breadcrumbs /-->
-		<!-- wp:group {"className":"mt-8 grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]","layout":{"type":"default"}} -->
-		<div class="wp-block-group mt-8 grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
-			<!-- wp:group {"layout":{"type":"default"}} -->
-			<div class="wp-block-group">
+		<!-- wp:group {"className":"mt-8 grid items-center gap-10 lg:grid-cols-[1.25fr_1fr] lg:gap-12","layout":{"type":"default"}} -->
+		<div class="wp-block-group mt-8 grid items-center gap-10 lg:grid-cols-[1.25fr_1fr] lg:gap-12">
+			<!-- wp:group {"className":"ks-hero-text","layout":{"type":"default"}} -->
+			<div class="wp-block-group ks-hero-text">
 				<!-- wp:group {"className":"ks-badge","layout":{"type":"default"}} -->
 				<div class="wp-block-group ks-badge">
 					<!-- wp:kasatkina/icon {"icon":"sparkles","size":14} /-->
@@ -31,8 +31,8 @@ $img = get_theme_file_uri( 'assets/images/' );
 					<!-- /wp:paragraph -->
 				</div>
 				<!-- /wp:group -->
-				<!-- wp:heading {"level":1,"className":"mt-6 text-4xl font-extrabold leading-[1.1] tracking-tight text-ink sm:text-5xl lg:text-6xl"} -->
-				<h1 class="wp-block-heading mt-6 text-4xl font-extrabold leading-[1.1] tracking-tight text-ink sm:text-5xl lg:text-6xl">Центр физиолечения и <mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-brand-color">психоконсультирования</mark> в Калининграде</h1>
+				<!-- wp:heading {"level":1,"className":"ks-hero-title mt-6 font-extrabold tracking-tight text-ink"} -->
+				<h1 class="wp-block-heading ks-hero-title mt-6 font-extrabold tracking-tight text-ink">Центр физиолечения и <mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-brand-color">психоконсультирования</mark> в Калининграде</h1>
 				<!-- /wp:heading -->
 				<!-- wp:paragraph {"className":"mt-6 max-w-xl text-lg leading-relaxed text-ink/70"} -->
 				<p class="mt-6 max-w-xl text-lg leading-relaxed text-ink/70">Профессиональная физиотерапевтическая помощь и психологическая поддержка в уютной атмосфере без стресса и очередей.</p>
@@ -51,8 +51,8 @@ $img = get_theme_file_uri( 'assets/images/' );
 			<!-- /wp:group -->
 			<!-- wp:group {"className":"relative","layout":{"type":"default"}} -->
 			<div class="wp-block-group relative">
-				<!-- wp:image {"sizeSlug":"full","linkDestination":"none","className":"ks-img-fill m-0 h-[420px] overflow-hidden rounded-[2rem] border border-line/60 shadow-xl shadow-brand/10 sm:h-[520px]"} -->
-				<figure class="wp-block-image size-full ks-img-fill m-0 h-[420px] overflow-hidden rounded-[2rem] border border-line/60 shadow-xl shadow-brand/10 sm:h-[520px]"><img src="<?php echo esc_url( $img ); ?>center-inside.jpg" alt="Кабинет центра доктора Касаткиной"/></figure>
+				<!-- wp:image {"sizeSlug":"full","linkDestination":"none","className":"ks-img-fill m-0 h-72 overflow-hidden rounded-[2rem] border border-line/60 shadow-xl shadow-brand/10 sm:h-[420px] lg:h-[520px]"} -->
+				<figure class="wp-block-image size-full ks-img-fill m-0 h-72 overflow-hidden rounded-[2rem] border border-line/60 shadow-xl shadow-brand/10 sm:h-[420px] lg:h-[520px]"><img src="<?php echo esc_url( $img ); ?>center-inside.jpg" alt="Кабинет центра доктора Касаткиной"/></figure>
 				<!-- /wp:image -->
 				<!-- wp:group {"className":"flex items-center gap-3 rounded-2xl border border-line/60 bg-white/95 px-4 py-3 shadow-xl shadow-brand/10 backdrop-blur absolute -left-4 bottom-8 sm:-left-6","layout":{"type":"default"}} -->
 				<div class="wp-block-group flex items-center gap-3 rounded-2xl border border-line/60 bg-white/95 px-4 py-3 shadow-xl shadow-brand/10 backdrop-blur absolute -left-4 bottom-8 sm:-left-6">
