@@ -86,14 +86,58 @@
 		} );
 	}
 
-	// Блокируем кнопку после отправки, чтобы заявка не ушла дважды.
+	// Заявки отправляются без перезагрузки страницы: форма заменяется сообщением на том же месте.
+	// Если скрипт не сработал — форма уйдёт обычным способом (с возвратом на страницу).
 	document.querySelectorAll( '.ks-form' ).forEach( ( form ) => {
-		form.addEventListener( 'submit', () => {
+		form.addEventListener( 'submit', async ( e ) => {
+			const box = form.parentElement;
 			const submit = form.querySelector( '[type="submit"]' );
+			const success = box.querySelector( '[data-ks-success]' );
+			const error = box.querySelector( '[data-ks-error]' );
+			if ( ! window.fetch || ! success ) {
+				return;
+			}
+			e.preventDefault();
 			if ( submit ) {
 				submit.disabled = true;
 				submit.classList.add( 'opacity-60' );
 			}
+			const data = new FormData( form );
+			data.append( 'ks_ajax', '1' );
+			try {
+				// form.action не годится: его перекрывает скрытое поле name="action".
+				const res = await fetch( form.getAttribute( 'action' ), { method: 'POST', body: data, credentials: 'same-origin' } );
+				const json = await res.json();
+				if ( json && json.ok ) {
+					form.hidden = true;
+					if ( error ) {
+						error.hidden = true;
+					}
+					const subtitle = box.querySelector( '[data-ks-subtitle]' );
+					if ( subtitle ) {
+						subtitle.hidden = true;
+					}
+					success.hidden = false;
+					if ( window.ym && window.kasatkinaMetrika ) {
+						window.ym( window.kasatkinaMetrika, 'reachGoal', 'booking_sent' );
+					}
+				} else if ( error ) {
+					error.hidden = false;
+				}
+			} catch ( err ) {
+				form.submit(); // сеть/сервер ответили не так — отправляем обычным способом
+				return;
+			}
+			if ( submit ) {
+				submit.disabled = false;
+				submit.classList.remove( 'opacity-60' );
+			}
 		} );
+	} );
+
+	// Плавная прокрутка — только для кликов по якорям на странице, но не при открытии
+	// страницы по ссылке с #якорем (иначе страница сначала уезжает вверх, потом едет вниз).
+	window.addEventListener( 'load', () => {
+		requestAnimationFrame( () => document.documentElement.classList.add( 'ks-smooth' ) );
 	} );
 } )();

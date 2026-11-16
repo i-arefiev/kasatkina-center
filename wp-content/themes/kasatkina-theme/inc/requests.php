@@ -50,12 +50,10 @@ function kasatkina_handle_booking(): void {
 	$back = wp_get_referer() ?: home_url( '/' );
 	$back = remove_query_arg( array( 'ks_sent', 'ks_error' ), $back );
 	$form = isset( $_POST['ks_form'] ) ? sanitize_html_class( wp_unslash( $_POST['ks_form'] ) ) : 'zapis';
-	$hash = '#' . $form;
 
 	// Скрытое поле-ловушка: люди его не видят и не заполняют, спам-боты — заполняют.
 	if ( ! empty( $_POST['ks_website'] ) ) {
-		wp_safe_redirect( add_query_arg( 'ks_sent', $form, $back ) . $hash );
-		exit;
+		kasatkina_booking_respond( true, $back, $form );
 	}
 
 	$name    = sanitize_text_field( wp_unslash( $_POST['ks_name'] ?? '' ) );
@@ -65,15 +63,13 @@ function kasatkina_handle_booking(): void {
 	$digits  = preg_replace( '/\D/', '', $phone );
 
 	if ( '' === $name || strlen( $digits ) < 10 || ( isset( $_POST['ks_consent_required'] ) && empty( $_POST['ks_consent'] ) ) ) {
-		wp_safe_redirect( add_query_arg( 'ks_error', $form, $back ) . $hash );
-		exit;
+		kasatkina_booking_respond( false, $back, $form );
 	}
 
 	// Не чаще одной заявки в 20 секунд с одного адреса — защита от двойного нажатия и флуда.
 	$ip_key = 'ks_req_' . md5( (string) ( $_SERVER['REMOTE_ADDR'] ?? '' ) );
 	if ( get_transient( $ip_key ) ) {
-		wp_safe_redirect( add_query_arg( 'ks_sent', $form, $back ) . $hash );
-		exit;
+		kasatkina_booking_respond( true, $back, $form );
 	}
 	set_transient( $ip_key, 1, 20 );
 
@@ -107,7 +103,18 @@ function kasatkina_handle_booking(): void {
 		wp_mail( $to, 'Заявка с сайта: ' . $name, $body );
 	}
 
-	wp_safe_redirect( add_query_arg( 'ks_sent', $form, $back ) . $hash );
+	kasatkina_booking_respond( true, $back, $form );
+}
+
+/**
+ * Ответ на отправку формы: JSON, если форма отправлена скриптом без перезагрузки страницы,
+ * иначе — возврат на страницу с ?ks_sent / ?ks_error (запасной вариант без JavaScript).
+ */
+function kasatkina_booking_respond( bool $ok, string $back, string $form ): void {
+	if ( ! empty( $_POST['ks_ajax'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		wp_send_json( array( 'ok' => $ok ), $ok ? 200 : 422 );
+	}
+	wp_safe_redirect( add_query_arg( $ok ? 'ks_sent' : 'ks_error', $form, $back ) . '#' . $form );
 	exit;
 }
 add_action( 'admin_post_nopriv_kasatkina_booking', 'kasatkina_handle_booking' );

@@ -31,22 +31,20 @@ if ( $attributes['showService'] ) {
 	<?php if ( $attributes['title'] ) : ?>
 		<div class="text-lg font-bold text-ink"><?php echo esc_html( $attributes['title'] ); ?></div>
 	<?php endif; ?>
-	<?php if ( $attributes['subtitle'] ) : ?>
-		<p class="mt-1 text-sm text-ink/60"><?php echo esc_html( $attributes['subtitle'] ); ?></p>
+	<?php if ( $attributes['subtitle'] && ! $sent ) : ?>
+		<p class="mt-1 text-sm text-ink/60" data-ks-subtitle><?php echo esc_html( $attributes['subtitle'] ); ?></p>
 	<?php endif; ?>
 
+	<div class="mt-5 flex items-start gap-3 rounded-xl border border-brand/40 bg-brand-soft p-4 text-sm text-ink" role="status" data-ks-success <?php echo $sent ? '' : 'hidden'; ?>>
+		<?php echo kasatkina_icon( 'check', 20, 'text-brand' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+		<span><strong>Заявка отправлена.</strong> Мы свяжемся с Вами в течение рабочего дня.</span>
+	</div>
 	<?php if ( $sent ) : ?>
-		<div class="mt-5 flex items-start gap-3 rounded-xl border border-brand/40 bg-brand-soft p-4 text-sm text-ink" role="status">
-			<?php echo kasatkina_icon( 'check', 20, 'text-brand' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
-			<span><strong>Заявка отправлена.</strong> Мы свяжемся с Вами в течение рабочего дня.</span>
-		</div>
 		<script>window.addEventListener('load',function(){if(window.ym&&window.kasatkinaMetrika){ym(window.kasatkinaMetrika,'reachGoal','booking_sent');}});</script>
 	<?php else : ?>
-		<?php if ( $error ) : ?>
-			<div class="mt-5 rounded-xl border border-red-300 bg-red-50 p-4 text-sm text-red-800" role="alert">
-				Проверьте, пожалуйста, имя и номер телефона (не меньше 10 цифр).
-			</div>
-		<?php endif; ?>
+		<div class="mt-5 rounded-xl border border-red-300 bg-red-50 p-4 text-sm text-red-800" role="alert" data-ks-error <?php echo $error ? '' : 'hidden'; ?>>
+			Проверьте, пожалуйста, имя и номер телефона (не меньше 10 цифр).
+		</div>
 		<form class="ks-form mt-5 grid gap-3" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="kasatkina_booking" />
 			<input type="hidden" name="ks_form" value="<?php echo esc_attr( $form_id ); ?>" />

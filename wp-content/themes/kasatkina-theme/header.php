@@ -45,7 +45,7 @@ $email   = kasatkina_opt( 'email' );
 	</div>
 </div>
 
-<header class="sticky top-0 z-50 border-b border-line/40 bg-white/90 backdrop-blur-lg">
+<header class="ks-header sticky top-0 z-50 border-b border-line/40 bg-white/90 backdrop-blur-lg">
 	<div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4">
 		<div class="flex shrink-0 items-center [&_img]:h-11 [&_img]:w-auto">
 			<?php if ( has_custom_logo() ) : ?>

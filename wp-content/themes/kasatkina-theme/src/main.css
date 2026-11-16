@@ -9,8 +9,23 @@
 @tailwind utilities;
 
 @layer base {
-	html {
+	html.ks-smooth {
 		scroll-behavior: smooth;
+	}
+	/* Липкая шапка под панелью WordPress, когда администратор вошёл на сайт. */
+	.admin-bar .ks-header {
+		top: 32px;
+	}
+	@media (max-width: 782px) {
+		.admin-bar .ks-header {
+			top: 46px;
+		}
+	}
+	@media (max-width: 600px) {
+		/* Здесь панель WordPress прокручивается вместе со страницей. */
+		.admin-bar .ks-header {
+			top: 0;
+		}
 	}
 	body {
 		@apply bg-white font-sans text-ink antialiased;
@@ -46,6 +61,10 @@
 	/* Якоря (#contacts и т. п.) не прячутся под липкой шапкой. */
 	[id] {
 		scroll-margin-top: 6rem;
+	}
+	/* Атрибут hidden сильнее утилит вроде .flex (иначе скрытые блоки форм видны). */
+	[hidden] {
+		display: none !important;
 	}
 	/* Скрытое поле-ловушка для спам-ботов в формах. */
 	.ks-hp {
