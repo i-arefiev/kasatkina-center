@@ -12,3 +12,8 @@ wp-content/cache/
 # Разработка
 node_modules/
 .DS_Store
+
+# Страницы ошибок — создаёт тема (inc/error-pages.php)
+wp-content/php-error.php
+wp-content/db-error.php
+wp-content/500.html

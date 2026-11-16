@@ -199,6 +199,56 @@
 		@apply shrink-0 justify-center px-5 py-2.5;
 	}
 
+	/* Страница 404 */
+	.ks-err {
+		@apply relative flex min-h-screen items-center justify-center overflow-hidden px-6 py-20; /* не grid: у колонок grid в теме container-type, здесь он схлопывает ширину */
+	}
+	.ks-err__wrap {
+		@apply w-full max-w-2xl text-center;
+	}
+	.ks-err__code {
+		@apply flex items-center justify-center gap-[0.1em] font-extrabold leading-none text-brand;
+		font-size: clamp(6rem, 18vw, 10rem);
+		letter-spacing: -0.04em;
+	}
+	.ks-err__zero {
+		@apply relative flex shrink-0 items-center justify-center rounded-full;
+		width: 0.62em;
+		height: 0.78em;
+		border: 0.14em solid currentColor;
+	}
+	.ks-err__breath {
+		@apply h-[45%] w-[45%] rounded-full bg-brand;
+		animation: ks-breath 4s ease-in-out infinite;
+	}
+	.ks-err__hint {
+		@apply mt-2 text-sm text-brand-dark;
+		animation: ks-hint 4s ease-in-out infinite;
+	}
+	.ks-err__title {
+		@apply mt-5 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl;
+	}
+	.ks-err__text {
+		@apply mx-auto mt-4 max-w-xl text-lg leading-relaxed text-ink/70;
+	}
+	.ks-err__actions {
+		@apply mt-8 flex flex-wrap justify-center gap-3;
+	}
+	@keyframes ks-breath {
+		0%, 100% { transform: scale(0.4); opacity: 0.35; }
+		50% { transform: scale(1.25); opacity: 1; }
+	}
+	@keyframes ks-hint {
+		0%, 100% { opacity: 0.4; }
+		50% { opacity: 1; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.ks-err__breath,
+		.ks-err__hint {
+			animation: none;
+		}
+	}
+
 	/* Окно с видео */
 	.ks-video-modal {
 		@apply m-auto w-[min(64rem,calc(100vw-2rem))] max-w-none overflow-visible border-0 bg-transparent p-0;

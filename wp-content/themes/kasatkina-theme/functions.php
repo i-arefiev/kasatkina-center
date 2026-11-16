@@ -12,16 +12,17 @@
  *   blocks.php        — собственные блоки темы, стили блоков, категория паттернов
  *   seo.php           — Метрика, вебмастера, разметка организации, мета-описание, адреса статей
  *   legal.php         — реквизиты оператора ПДн, ссылки на политику и согласие, плашка о cookies
+ *   error-pages.php   — страница «Сервер на больничном» (500/503) в wp-content: php-error.php, db-error.php, 500.html
  *   site-setup.php    — страница «Внешний вид → Настройка сайта» (создание страниц из паттернов)
  *   admin-help.php    — подсказки для администратора в консоли
  */
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'KASATKINA_VERSION', '2.3.2' );
+define( 'KASATKINA_VERSION', '2.4.0' );
 define( 'KASATKINA_DIR', get_template_directory() );
 define( 'KASATKINA_URI', get_template_directory_uri() );
 
-foreach ( array( 'setup', 'icons', 'customizer', 'template-tags', 'services', 'requests', 'blocks', 'seo', 'legal', 'site-setup', 'admin-help' ) as $kasatkina_file ) {
+foreach ( array( 'setup', 'icons', 'customizer', 'template-tags', 'services', 'requests', 'blocks', 'seo', 'legal', 'error-pages', 'site-setup', 'admin-help' ) as $kasatkina_file ) {
 	require_once KASATKINA_DIR . '/inc/' . $kasatkina_file . '.php';
 }
