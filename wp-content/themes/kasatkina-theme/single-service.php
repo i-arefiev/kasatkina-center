@@ -116,11 +116,12 @@ get_header();
 		<?php endif; ?>
 
 		<?php if ( $indications || $contraindications ) : ?>
+			<?php $both = $indications && $contraindications; // одна карточка — на всю ширину ?>
 			<section class="border-b border-line/30 bg-brand-soft/40 py-20">
 				<div class="mx-auto max-w-7xl px-6">
-					<p class="ks-eyebrow"><?php echo $consult ? 'С чем можно обратиться' : 'Показания и противопоказания'; ?></p>
+					<p class="ks-eyebrow"><?php echo $consult ? 'С чем можно обратиться' : ( $contraindications ? 'Показания и противопоказания' : 'Показания' ); ?></p>
 					<h2 class="mt-3 text-4xl font-extrabold tracking-tight text-ink sm:text-5xl"><?php echo $consult ? 'С какими запросами приходят' : 'Когда назначают процедуру'; ?></h2>
-					<div class="mt-12 grid gap-6 lg:grid-cols-2">
+					<div class="mt-12 grid gap-6<?php echo $both ? ' lg:grid-cols-2' : ''; ?>">
 						<?php if ( $indications ) : ?>
 							<div class="rounded-3xl border border-brand/30 bg-white p-8 shadow-sm">
 								<div class="flex items-center gap-3">
@@ -130,11 +131,14 @@ get_header();
 										<div class="text-xl font-bold text-ink"><?php echo $consult ? 'Когда стоит обратиться' : 'Когда рекомендуется'; ?></div>
 									</div>
 								</div>
-								<ul class="ks-checks mt-6">
+								<ul class="ks-checks mt-6<?php echo $both ? '' : ' ks-checks--cols'; ?>">
 									<?php foreach ( $indications as $item ) : ?>
 										<li><?php echo esc_html( $item ); ?></li>
 									<?php endforeach; ?>
 								</ul>
+								<?php if ( ! $contraindications && ! $consult ) : ?>
+									<p class="mt-6 rounded-xl bg-ink/[0.04] p-4 text-xs leading-relaxed text-ink/70">Имеются противопоказания. Перед процедурой необходима консультация специалиста.</p>
+								<?php endif; ?>
 							</div>
 						<?php endif; ?>
 						<?php if ( $contraindications ) : ?>

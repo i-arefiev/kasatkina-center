@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'KASATKINA_VERSION', '2.3.0' );
+define( 'KASATKINA_VERSION', '2.3.1' );
 define( 'KASATKINA_DIR', get_template_directory() );
 define( 'KASATKINA_URI', get_template_directory_uri() );
 

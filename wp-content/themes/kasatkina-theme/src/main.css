@@ -239,6 +239,13 @@
 	.wp-block-list.is-style-ks-checks {
 		@apply list-none space-y-3 p-0;
 	}
+	/* Длинный список в широкой карточке — в две колонки */
+	.ks-checks--cols {
+		@apply md:columns-2 md:gap-x-12;
+	}
+	.ks-checks--cols > li {
+		@apply break-inside-avoid;
+	}
 	.ks-checks > li,
 	.wp-block-list.is-style-ks-checks > li {
 		@apply relative m-0 pl-8 text-sm leading-relaxed text-ink/85;
