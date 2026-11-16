@@ -21,17 +21,19 @@ $email  = kasatkina_opt( 'email' );
 		</div>
 
 		<div>
-			<div class="text-sm font-semibold text-white">Навигация</div>
-			<?php
-			wp_nav_menu( array(
-				'theme_location' => has_nav_menu( 'footer' ) ? 'footer' : 'primary',
-				'container'      => false,
-				'menu_class'     => 'mt-4 space-y-2 text-sm',
-				'fallback_cb'    => false,
-				'depth'          => 1,
-				'link_class'     => 'transition hover:text-brand',
-			) );
-			?>
+			<?php if ( has_nav_menu( 'footer' ) || has_nav_menu( 'primary' ) ) : ?>
+				<div class="text-sm font-semibold text-white">Навигация</div>
+				<?php
+				wp_nav_menu( array(
+					'theme_location' => has_nav_menu( 'footer' ) ? 'footer' : 'primary',
+					'container'      => false,
+					'menu_class'     => 'mt-4 space-y-2 text-sm',
+					'fallback_cb'    => false,
+					'depth'          => 1,
+					'link_class'     => 'transition hover:text-brand',
+				) );
+				?>
+			<?php endif; ?>
 		</div>
 
 		<div>

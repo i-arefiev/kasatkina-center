@@ -55,6 +55,21 @@ function kasatkina_site_pages(): array {
 	);
 }
 
+// Пока мастер не запускали — напоминание на всех страницах админки.
+add_action( 'admin_notices', function () {
+	if ( get_option( 'kasatkina_setup_done' ) || ! current_user_can( 'edit_theme_options' ) ) {
+		return;
+	}
+	$screen = get_current_screen();
+	if ( $screen && 'appearance_page_kasatkina-setup' === $screen->id ) {
+		return;
+	}
+	printf(
+		'<div class="notice notice-warning"><p><strong>Тема «Центр доктора Касаткиной» установлена, но сайт ещё не настроен.</strong> Откройте <a href="%s">Внешний вид → Настройка сайта</a> и нажмите «Выполнить» — будут созданы страницы, меню, логотипы и перенесены статьи.</p></div>',
+		esc_url( admin_url( 'themes.php?page=kasatkina-setup' ) )
+	);
+} );
+
 add_action( 'admin_menu', function () {
 	add_theme_page( 'Настройка сайта', 'Настройка сайта', 'edit_theme_options', 'kasatkina-setup', 'kasatkina_render_setup_page' );
 } );
@@ -262,6 +277,10 @@ function kasatkina_run_site_setup( array $opts ): array {
 
 	if ( ! empty( $opts['legacy'] ) ) {
 		$log = array_merge( $log, kasatkina_apply_legacy() );
+	}
+
+	if ( ! empty( $opts['pages'] ) || ! empty( $opts['reading'] ) ) {
+		update_option( 'kasatkina_setup_done', time(), false );
 	}
 
 	return $log;

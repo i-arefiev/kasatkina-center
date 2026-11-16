@@ -35,8 +35,12 @@ function kasatkina_posts_page_url(): string {
 function kasatkina_breadcrumb_items( ?int $post_id = null ): array {
 	$items = array( array( 'title' => 'Главная', 'url' => home_url( '/' ) ) );
 
-	if ( is_home() && ! is_front_page() ) {
-		$items[] = array( 'title' => get_the_title( (int) get_option( 'page_for_posts' ) ), 'url' => '' );
+	if ( is_front_page() && ! is_page() ) {
+		return array( array( 'title' => 'Главная', 'url' => '' ) );
+	}
+	if ( is_home() ) {
+		$posts_page = (int) get_option( 'page_for_posts' );
+		$items[]    = array( 'title' => $posts_page ? get_the_title( $posts_page ) : 'Статьи', 'url' => '' );
 		return $items;
 	}
 	if ( is_404() ) {
