@@ -126,6 +126,31 @@ function kasatkina_run_site_setup( array $opts ): array {
 	if ( ! empty( $opts['images'] ) ) {
 		$image_map = kasatkina_import_theme_images();
 		$log[]     = 'Картинки темы в медиатеке: ' . count( $image_map ) . ' шт.';
+
+		// Логотипы — только если ещё не заданы (не перетираем выбранные администратором).
+		$imported = get_option( 'kasatkina_imported_images', array() );
+		if ( ! get_theme_mod( 'custom_logo' ) && ! empty( $imported['logo.png'] ) ) {
+			set_theme_mod( 'custom_logo', (int) $imported['logo.png'] );
+			$log[] = 'Логотип в шапке установлен.';
+		}
+		if ( ! get_theme_mod( 'footer_logo' ) && ! empty( $imported['logo-white.png'] ) ) {
+			set_theme_mod( 'footer_logo', wp_get_attachment_url( (int) $imported['logo-white.png'] ) );
+			$log[] = 'Светлый логотип в подвале установлен.';
+		}
+		if ( ! get_option( 'site_icon' ) && ! empty( $imported['logo.png'] ) ) {
+			$log[] = 'Иконку сайта (favicon) можно задать в «Внешний вид → Настроить → Свойства сайта».';
+		}
+	}
+
+	// Чистая установка: стандартные «Привет, мир!» и «Пример страницы» — в корзину.
+	if ( ! empty( $opts['pages'] ) ) {
+		foreach ( array( 1 => array( 'Привет, мир!', 'Hello world!' ), 2 => array( 'Пример страницы', 'Sample Page' ) ) as $default_id => $titles ) {
+			$default = get_post( $default_id );
+			if ( $default && 'trash' !== $default->post_status && in_array( $default->post_title, $titles, true ) && $default->post_date === $default->post_modified ) {
+				wp_trash_post( $default_id );
+				$log[] = sprintf( '«%s» (стандартная запись WordPress) — в корзине.', $default->post_title );
+			}
+		}
 	}
 
 	$ids = array();
