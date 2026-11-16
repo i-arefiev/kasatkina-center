@@ -30,6 +30,21 @@ function kasatkina_seo_fields(): array {
 add_action( 'parse_request', function () {
 	$path = trim( (string) wp_parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH ), '/' );
 
+	// /favicon.ico — иконка старого сайта (её Яндекс показывает в выдаче), пока администратор
+	// не выбрал другую иконку в «Свойствах сайта». Иначе WordPress отдал бы свой логотип «W».
+	if ( 'favicon.ico' === $path ) {
+		$imported  = get_option( 'kasatkina_imported_images', array() );
+		$site_icon = (int) get_option( 'site_icon' );
+		if ( ! $site_icon || $site_icon === (int) ( $imported['site-icon.png'] ?? 0 ) ) {
+			status_header( 200 );
+			header( 'Content-Type: image/x-icon' );
+			header( 'Cache-Control: public, max-age=604800' );
+			readfile( KASATKINA_DIR . '/data/legacy-files/favicon.ico' ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+			exit;
+		}
+		return; // своя иконка — WordPress сам перенаправит на неё
+	}
+
 	// Файлы старого сайта по прежним адресам (выписка из реестра лицензий и т. п.).
 	$legacy_files = array( 'public/documents/Doc.pdf' => 'Doc.pdf' );
 	if ( isset( $legacy_files[ $path ] ) && is_readable( KASATKINA_DIR . '/data/legacy-files/' . $legacy_files[ $path ] ) ) {

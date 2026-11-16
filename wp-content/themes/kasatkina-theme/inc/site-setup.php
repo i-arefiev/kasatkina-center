@@ -152,8 +152,9 @@ function kasatkina_run_site_setup( array $opts ): array {
 			set_theme_mod( 'footer_logo', wp_get_attachment_url( (int) $imported['logo-white.png'] ) );
 			$log[] = 'Светлый логотип в подвале установлен.';
 		}
-		if ( ! get_option( 'site_icon' ) && ! empty( $imported['logo.png'] ) ) {
-			$log[] = 'Иконку сайта (favicon) можно задать в «Внешний вид → Настроить → Свойства сайта».';
+		if ( ! get_option( 'site_icon' ) && ! empty( $imported['site-icon.png'] ) ) {
+			update_option( 'site_icon', (int) $imported['site-icon.png'] );
+			$log[] = 'Иконка сайта (favicon) установлена — как на старом сайте.';
 		}
 	}
 
