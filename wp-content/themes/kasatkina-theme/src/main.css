@@ -487,3 +487,29 @@
 		@apply sr-only;
 	}
 }
+
+/* Редактор статей: крупный заголовок и текст читаемой колонкой, как на сайте.
+   На страницы из секций не влияет — у них верхний уровень из групп, а не абзацев. */
+.editor-styles-wrapper .editor-post-title {
+	max-width: 48rem;
+	margin: 2.5rem auto 1.5rem;
+	padding: 0 1.5rem;
+	font-size: 2.25rem;
+	font-weight: 800;
+	line-height: 1.15;
+	letter-spacing: -0.02em;
+	color: #1e293b;
+}
+.editor-styles-wrapper .is-root-container > :where(p, h2, h3, h4, ul, ol, blockquote, .wp-block-image, .wp-block-gallery, .wp-block-embed, .wp-block-table) {
+	max-width: 48rem;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 1.5rem;
+	padding-right: 1.5rem;
+}
+.editor-styles-wrapper .is-root-container > p {
+	font-size: 1.125rem;
+	line-height: 1.7;
+	color: rgb(30 41 59 / 0.85);
+	margin-bottom: 1.25rem;
+}

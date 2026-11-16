@@ -19,12 +19,16 @@ add_action( 'init', function () {
 			'search_items'  => 'Искать услуги',
 			'not_found'     => 'Услуг не найдено',
 			'menu_name'     => 'Услуги',
+			'featured_image'        => 'Фото услуги',
+			'set_featured_image'    => 'Выбрать фото',
+			'remove_featured_image' => 'Удалить фото',
+			'use_featured_image'    => 'Использовать как фото услуги',
 		),
 		'public'       => true,
 		'has_archive'  => false,
 		'menu_icon'    => 'dashicons-heart',
 		'menu_position'=> 5,
-		'supports'     => array( 'title', 'editor', 'excerpt', 'thumbnail', 'page-attributes' ),
+		'supports'     => array( 'title', 'editor', 'excerpt', 'thumbnail', 'page-attributes', 'revisions' ),
 		'show_in_rest' => true,
 		'rewrite'      => array( 'slug' => 'services', 'with_front' => false ),
 		// В редакторе услуги заранее стоит блок «Галерея» — сюда добавляются фото процедуры.
@@ -73,7 +77,7 @@ function kasatkina_render_service_fields( WP_Post $post ): void {
 		.ks-fields input, .ks-fields textarea { width: 100%; }
 	</style>
 	<p class="description" style="margin-bottom:12px">
-		Короткое описание для карточки и первого экрана — поле «Отрывок» (справа или ниже). Фото для обложки — «Изображение записи». Фото процедуры — в блок «Галерея» в основном редакторе выше.
+		Всё, что показывается на странице услуги. Пустое поле на сайте просто не выводится. Краткое описание — в поле ниже, главное фото — справа («Фото услуги»), дополнительные фото процедуры — кнопкой «Добавить медиафайл» в большое поле выше.
 	</p>
 	<div class="ks-fields">
 		<div class="ks-row">
@@ -218,3 +222,20 @@ function kasatkina_service_is_consult( int $post_id ): bool {
 	}
 	return false;
 }
+
+/**
+ * Услуги — в классическом редакторе: цена, тексты и фото видны сразу на одном экране,
+ * без свёрнутой панели «Мета-боксы» блочного редактора. Статьи и страницы — в блочном.
+ */
+add_filter( 'use_block_editor_for_post_type', function ( bool $use, string $post_type ): bool {
+	return 'service' === $post_type ? false : $use;
+}, 10, 2 );
+
+// «Отрывок» → понятное название, и поле всегда видно (по умолчанию WordPress его прячет).
+add_action( 'add_meta_boxes_service', function () {
+	remove_meta_box( 'postexcerpt', 'service', 'normal' );
+	add_meta_box( 'postexcerpt', 'Краткое описание — в карточке услуги и под заголовком', 'post_excerpt_meta_box', 'service', 'normal', 'high' );
+} );
+add_filter( 'default_hidden_meta_boxes', function ( array $hidden, WP_Screen $screen ): array {
+	return 'service' === $screen->post_type ? array_diff( $hidden, array( 'postexcerpt', 'pageparentdiv' ) ) : $hidden;
+}, 10, 2 );
