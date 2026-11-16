@@ -44,6 +44,24 @@ function kasatkina_site_pages(): array {
 			'excerpt'  => 'Современные физиотерапевтические методики и психологическая помощь, подобранные индивидуально под ваш диагноз, возраст и цели восстановления.',
 			'content'  => "<!-- wp:paragraph -->\n<p>В Центре физиолечения и психоконсультирования доктора Касаткиной мы применяем современные физиотерапевтические методики, которые помогают организму восстановиться после болезней, травм и операций. Каждая процедура подбирается индивидуально, с учётом диагноза, возраста и общего состояния пациента.</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>Мы не используем универсальные протоколы: сначала врач проводит консультацию, оценивает показания и только после этого составляет персональный курс лечения. Такой подход позволяет достичь устойчивого результата при минимальной нагрузке на организм.</p>\n<!-- /wp:paragraph -->",
 		),
+		'privacy'  => array(
+			'title'    => 'Политика обработки персональных данных',
+			'path'     => 'privacy-policy',
+			'template' => '',
+			'patterns' => array( 'kasatkina/legal-privacy' ),
+		),
+		'consent'  => array(
+			'title'    => 'Согласие на обработку персональных данных',
+			'path'     => 'soglasie',
+			'template' => '',
+			'patterns' => array( 'kasatkina/legal-consent' ),
+		),
+		'legal'    => array(
+			'title'    => 'Правовая информация',
+			'path'     => 'pravovaya-informaciya',
+			'template' => '',
+			'patterns' => array( 'kasatkina/legal-info' ),
+		),
 		'articles' => array(
 			'title'      => 'Статьи',
 			'path'       => 'articles',
@@ -126,6 +144,15 @@ function kasatkina_build_content( array $patterns, array $image_map ): string {
 		$pattern = $registry->get_registered( $name );
 		if ( $pattern ) {
 			$parts[] = trim( $pattern['content'] );
+			continue;
+		}
+		// WordPress кэширует список паттернов темы по номеру версии: новый файл может быть ещё
+		// не зарегистрирован. Тогда берём разметку прямо из файла паттерна.
+		$file = KASATKINA_DIR . '/patterns/' . str_replace( 'kasatkina/', '', $name ) . '.php';
+		if ( is_readable( $file ) ) {
+			ob_start();
+			include $file;
+			$parts[] = trim( (string) ob_get_clean() );
 		}
 	}
 	return strtr( implode( "\n\n", $parts ), $image_map );
@@ -177,6 +204,17 @@ function kasatkina_run_site_setup( array $opts ): array {
 		}
 		$existing = $existing ?: get_page_by_path( $page['path'] );
 
+		// Политика: черновик «Политика конфиденциальности», который WordPress создаёт сам при установке,
+		// заменяется нашим текстом (он не опубликован и не редактировался — терять нечего).
+		$replace_draft = false;
+		if ( 'privacy' === $key ) {
+			$candidate = $existing ?: get_post( (int) get_option( 'wp_page_for_privacy_policy' ) );
+			if ( $candidate && 'page' === $candidate->post_type && 'draft' === $candidate->post_status ) {
+				$existing      = $candidate;
+				$replace_draft = true;
+			}
+		}
+
 		// Страница из бета-версии по старому адресу — переносим на новый.
 		if ( ! $existing && ! empty( $page['legacy'] ) ) {
 			$legacy = get_page_by_path( $page['legacy'] );
@@ -200,13 +238,17 @@ function kasatkina_run_site_setup( array $opts ): array {
 
 		if ( $existing ) {
 			$ids[ $key ] = $existing->ID;
-			if ( ! empty( $opts['overwrite'] ) ) {
+			// Пустая страница (например, созданная раньше без текста) заполняется и без перезаписи.
+			$replace_draft = $replace_draft || '' === trim( $existing->post_content );
+			if ( ! empty( $opts['overwrite'] ) || $replace_draft ) {
 				// Явно сохраняем текущее содержимое в «Редакции» — WordPress сам этого не делает,
 				// если у страницы ещё не было ни одной редакции.
 				_wp_put_post_revision( $existing );
-				$data['ID']         = $existing->ID;
-				$data['post_title'] = $existing->post_title;
-				$data['post_name']  = $existing->post_name;
+				$data['ID'] = $existing->ID;
+				if ( ! $replace_draft ) {
+					$data['post_title'] = $existing->post_title;
+					$data['post_name']  = $existing->post_name;
+				}
 				wp_update_post( wp_slash( $data ) );
 				$log[] = sprintf( '«%s» — содержимое обновлено (прежнее сохранено в «Редакциях»).', $existing->post_title );
 			} else {
@@ -217,8 +259,11 @@ function kasatkina_run_site_setup( array $opts ): array {
 			$log[]       = sprintf( '«%s» — создана.', $page['title'] );
 		}
 
-		if ( ! empty( $ids[ $key ] ) && ( ! $existing || ! empty( $opts['overwrite'] ) ) ) {
+		if ( ! empty( $ids[ $key ] ) && ( ! $existing || ! empty( $opts['overwrite'] ) || $replace_draft ) ) {
 			update_post_meta( $ids[ $key ], '_wp_page_template', $page['template'] ?: 'default' );
+		}
+		if ( 'privacy' === $key && ! empty( $ids[ $key ] ) ) {
+			update_option( 'wp_page_for_privacy_policy', (int) $ids[ $key ] );
 		}
 	}
 

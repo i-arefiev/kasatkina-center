@@ -11,7 +11,7 @@ $form_id  = kasatkina_next_form_id();
 $sent     = isset( $_GET['ks_sent'] ) && sanitize_html_class( wp_unslash( $_GET['ks_sent'] ) ) === $form_id; // phpcs:ignore WordPress.Security.NonceVerification
 $error    = isset( $_GET['ks_error'] ) && sanitize_html_class( wp_unslash( $_GET['ks_error'] ) ) === $form_id; // phpcs:ignore WordPress.Security.NonceVerification
 $is_card  = 'plain' !== $attributes['variant'];
-$field    = 'w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink/40 focus:border-brand focus:ring-2 focus:ring-brand/20';
+$field    = 'ym-disable-keys w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink outline-none transition placeholder:text-ink/40 focus:border-brand focus:ring-2 focus:ring-brand/20';
 $wrapper  = get_block_wrapper_attributes( array(
 	'id'    => $form_id,
 	'class' => 'scroll-mt-28 ' . ( $is_card ? 'rounded-2xl border border-line/60 bg-white p-6 sm:p-8' : '' ),
@@ -76,12 +76,19 @@ if ( $attributes['showService'] ) {
 
 			<label class="flex cursor-pointer items-start gap-3 pt-1 text-xs text-ink/70">
 				<input type="checkbox" name="ks_consent" value="1" required class="mt-0.5 h-4 w-4 shrink-0 accent-brand" />
-				<span>Я согласен(-на) на обработку персональных данных<?php
-					$privacy = get_privacy_policy_url();
-					if ( $privacy ) {
-						printf( ' в соответствии с <a href="%s" class="underline hover:text-brand" target="_blank">политикой конфиденциальности</a>', esc_url( $privacy ) );
+				<span>
+					<?php
+					$consent_url = kasatkina_page_link( 'soglasie' );
+					$policy_url  = get_privacy_policy_url();
+					echo $consent_url
+						? sprintf( 'Я даю <a href="%s" class="underline hover:text-brand" target="_blank">согласие на обработку персональных данных</a>', esc_url( $consent_url ) )
+						: 'Я даю согласие на обработку персональных данных';
+					if ( $policy_url ) {
+						printf( ' и ознакомлен(а) с <a href="%s" class="underline hover:text-brand" target="_blank">политикой обработки персональных данных</a>', esc_url( $policy_url ) );
 					}
-				?>.</span>
+					echo '.';
+					?>
+				</span>
 			</label>
 
 			<button type="submit" class="ks-btn mt-2 w-full justify-center">

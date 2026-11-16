@@ -135,6 +135,24 @@
 		} );
 	} );
 
+	// Плашка о cookies: показываем, пока посетитель не нажал «Понятно».
+	const cookie = document.getElementById( 'ks-cookie' );
+	if ( cookie ) {
+		let accepted = false;
+		try {
+			accepted = window.localStorage.getItem( 'ks_cookie_ok' ) === '1';
+		} catch ( e ) {}
+		if ( ! accepted ) {
+			cookie.hidden = false;
+		}
+		cookie.querySelector( '[data-ks-cookie-ok]' ).addEventListener( 'click', () => {
+			cookie.hidden = true;
+			try {
+				window.localStorage.setItem( 'ks_cookie_ok', '1' );
+			} catch ( e ) {}
+		} );
+	}
+
 	// Плавная прокрутка — только для кликов по якорям на странице, но не при открытии
 	// страницы по ссылке с #якорем (иначе страница сначала уезжает вверх, потом едет вниз).
 	window.addEventListener( 'load', () => {

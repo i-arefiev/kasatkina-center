@@ -34,7 +34,7 @@ function kasatkina_option_fields(): array {
  * Значение настройки (или значение по умолчанию).
  */
 function kasatkina_opt( string $key ): string {
-	$fields  = kasatkina_option_fields() + kasatkina_seo_fields();
+	$fields  = kasatkina_option_fields() + kasatkina_seo_fields() + kasatkina_operator_fields();
 	$default = $fields[ $key ][1] ?? '';
 	return (string) get_theme_mod( 'ks_' . $key, $default );
 }
@@ -69,8 +69,15 @@ add_action( 'customize_register', function ( WP_Customize_Manager $wp_customize 
 		'priority'    => 31,
 	) );
 
+	$wp_customize->add_section( 'kasatkina_operator', array(
+		'title'       => 'Реквизиты (оператор персональных данных)',
+		'description' => 'Выводятся в политике обработки персональных данных, согласии и на странице «Правовая информация». Данные — из реестра операторов Роскомнадзора; пустые поля на сайте не показываются.',
+		'priority'    => 32,
+	) );
+
 	$all = array_map( fn( $f ) => $f + array( 3 => 'kasatkina_contacts' ), kasatkina_option_fields() )
-		+ array_map( fn( $f ) => $f + array( 3 => 'kasatkina_seo' ), kasatkina_seo_fields() );
+		+ array_map( fn( $f ) => $f + array( 3 => 'kasatkina_seo' ), kasatkina_seo_fields() )
+		+ array_map( fn( $f ) => $f + array( 3 => 'kasatkina_operator' ), kasatkina_operator_fields() );
 
 	foreach ( $all as $key => [ $label, $default, $type, $section ] ) {
 		$sanitize = match ( $type ) {

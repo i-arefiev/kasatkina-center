@@ -57,8 +57,12 @@ $email  = kasatkina_opt( 'email' );
 			<p><?php echo esc_html( kasatkina_opt( 'license' ) ); ?></p>
 		<?php endif; ?>
 		<p class="mt-2">© <?php echo esc_html( wp_date( 'Y' ) ); ?> <?php echo esc_html( kasatkina_opt( 'copyright' ) ); ?></p>
-		<?php if ( get_privacy_policy_url() ) : ?>
-			<p class="mt-2"><a href="<?php echo esc_url( get_privacy_policy_url() ); ?>" class="underline transition hover:text-brand">Политика конфиденциальности</a></p>
+		<?php if ( kasatkina_legal_links() ) : ?>
+			<p class="mt-2 flex flex-wrap gap-x-5 gap-y-1">
+				<?php foreach ( kasatkina_legal_links() as $label => $url ) : ?>
+					<a href="<?php echo esc_url( $url ); ?>" class="underline decoration-white/30 underline-offset-2 transition hover:text-brand"><?php echo esc_html( $label ); ?></a>
+				<?php endforeach; ?>
+			</p>
 		<?php endif; ?>
 		<p class="mt-3">
 			Разработка сайта — <a href="https://arefiev.dev" target="_blank" rel="noopener" class="font-medium text-white/80 transition hover:text-brand">Студия Ильи Арефьева</a>

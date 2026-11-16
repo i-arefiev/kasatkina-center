@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kasatkina/operator-details",
+	"title": "Реквизиты оператора",
+	"category": "kasatkina",
+	"icon": "id",
+	"description": "Реквизиты из «Внешний вид → Настроить → Реквизиты (оператор персональных данных)».",
+	"keywords": [
+		"реквизиты",
+		"оператор",
+		"ИНН"
+	],
+	"textdomain": "kasatkina",
+	"supports": {
+		"html": false,
+		"className": true
+	},
+	"editorScript": "kasatkina-editor-blocks",
+	"render": "file:./render.php"
+}
