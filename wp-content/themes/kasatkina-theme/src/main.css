@@ -284,6 +284,14 @@
 	.wp-block-image.ks-img-portrait img {
 		@apply mx-auto h-[520px] max-h-[70vh] w-auto object-contain;
 	}
+	/* Плашка у фото, прижатая к верху (на странице руководителя — «15+ лет»): на телефоне фото узкое
+	   и плашка закрывает лицо — опускаем её вниз, над второй плашкой. Работает и для уже созданных страниц. */
+	@media (max-width: 639px) {
+		.ks-img-portrait ~ .absolute.top-10 {
+			top: auto;
+			bottom: 7.5rem;
+		}
+	}
 	/* Сканы документов */
 	.wp-block-image.ks-doc-img {
 		@apply cursor-zoom-in overflow-hidden rounded-xl border border-line/60 bg-white p-2 shadow-sm transition hover:-translate-y-1 hover:border-brand hover:shadow-lg;

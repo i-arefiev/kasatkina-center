@@ -63,7 +63,7 @@ $vid = get_theme_file_uri( 'assets/video/' );
 					<p class="m-0 text-2xl font-bold text-brand">250+</p>
 					<!-- /wp:paragraph -->
 					<!-- wp:paragraph {"className":"m-0 text-xs text-ink/60"} -->
-					<p class="m-0 text-xs text-ink/60">пациентов</p>
+					<p class="m-0 text-xs text-ink/60">пациентов в год</p>
 					<!-- /wp:paragraph -->
 				</div>
 				<!-- /wp:group -->
