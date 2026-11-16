@@ -60,6 +60,30 @@ function kasatkina_has_seo_plugin(): bool {
 }
 
 /**
+ * Картинка для превью ссылки в соцсетях и мессенджерах (Open Graph), стандарт 1200×630:
+ * обложка статьи/услуги/страницы → картинка из «Аналитика и вебмастера» → картинка темы по умолчанию.
+ *
+ * @return array{url:string,width:int,height:int,alt:string}
+ */
+function kasatkina_og_image(): array {
+	$alt = get_bloginfo( 'name' );
+	if ( is_singular() && has_post_thumbnail() && ! is_front_page() ) {
+		$src = wp_get_attachment_image_src( (int) get_post_thumbnail_id(), 'full' );
+		if ( $src ) {
+			return array( 'url' => $src[0], 'width' => (int) $src[1], 'height' => (int) $src[2], 'alt' => get_the_title() );
+		}
+	}
+	$custom = (int) get_theme_mod( 'ks_og_image' );
+	if ( $custom ) {
+		$src = wp_get_attachment_image_src( $custom, 'full' );
+		if ( $src ) {
+			return array( 'url' => $src[0], 'width' => (int) $src[1], 'height' => (int) $src[2], 'alt' => $alt );
+		}
+	}
+	return array( 'url' => KASATKINA_URI . '/assets/images/og-default.jpg', 'width' => 1200, 'height' => 630, 'alt' => $alt );
+}
+
+/**
  * Описание текущей страницы для поисковиков.
  */
 function kasatkina_meta_description(): string {
@@ -89,7 +113,7 @@ add_action( 'wp_head', function () {
 
 	if ( ! kasatkina_has_seo_plugin() ) {
 		$description = kasatkina_meta_description();
-		$image       = is_singular() && has_post_thumbnail() ? get_the_post_thumbnail_url( null, 'large' ) : ( get_theme_mod( 'custom_logo' ) ? wp_get_attachment_image_url( (int) get_theme_mod( 'custom_logo' ), 'full' ) : '' );
+		$image       = kasatkina_og_image();
 		printf( '<meta name="description" content="%s" />' . "\n", esc_attr( $description ) );
 		printf( '<meta property="og:type" content="%s" />' . "\n", is_singular( 'post' ) ? 'article' : 'website' );
 		printf( '<meta property="og:title" content="%s" />' . "\n", esc_attr( wp_get_document_title() ) );
@@ -97,9 +121,17 @@ add_action( 'wp_head', function () {
 		printf( '<meta property="og:url" content="%s" />' . "\n", esc_url( is_singular() ? get_permalink() : home_url( add_query_arg( array() ) ) ) );
 		printf( '<meta property="og:site_name" content="%s" />' . "\n", esc_attr( get_bloginfo( 'name' ) ) );
 		echo '<meta property="og:locale" content="ru_RU" />' . "\n";
-		if ( $image ) {
-			printf( '<meta property="og:image" content="%s" />' . "\n", esc_url( $image ) );
+		printf( '<meta property="og:image" content="%s" />' . "\n", esc_url( $image['url'] ) );
+		if ( $image['width'] && $image['height'] ) {
+			printf( '<meta property="og:image:width" content="%d" />' . "\n", $image['width'] );
+			printf( '<meta property="og:image:height" content="%d" />' . "\n", $image['height'] );
 		}
+		printf( '<meta property="og:image:alt" content="%s" />' . "\n", esc_attr( $image['alt'] ) );
+		// Крупная карточка в Telegram, VK, X и т. п.
+		echo '<meta name="twitter:card" content="summary_large_image" />' . "\n";
+		printf( '<meta name="twitter:title" content="%s" />' . "\n", esc_attr( wp_get_document_title() ) );
+		printf( '<meta name="twitter:description" content="%s" />' . "\n", esc_attr( $description ) );
+		printf( '<meta name="twitter:image" content="%s" />' . "\n", esc_url( $image['url'] ) );
 	}
 
 	// Разметка организации — на главной.

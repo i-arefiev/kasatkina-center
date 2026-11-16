@@ -90,6 +90,15 @@ add_action( 'customize_register', function ( WP_Customize_Manager $wp_customize 
 		) );
 	}
 
+	// Картинка для превью ссылок в соцсетях (Open Graph).
+	$wp_customize->add_setting( 'ks_og_image', array( 'sanitize_callback' => 'absint' ) );
+	$wp_customize->add_control( new WP_Customize_Media_Control( $wp_customize, 'ks_og_image', array(
+		'label'       => 'Картинка для превью ссылки в соцсетях и мессенджерах',
+		'description' => 'Размер 1200×630. Показывается, когда ссылку на сайт отправляют в Telegram, VK, WhatsApp и т. п. У статей и услуг с обложкой — их обложка. Пусто — картинка темы по умолчанию.',
+		'section'     => 'kasatkina_seo',
+		'mime_type'   => 'image',
+	) ) );
+
 	// Отдельный логотип для тёмного подвала.
 	$wp_customize->add_setting( 'footer_logo', array( 'sanitize_callback' => 'esc_url_raw' ) );
 	$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'footer_logo', array(
