@@ -337,8 +337,11 @@ function kasatkina_run_site_setup( array $opts ): array {
 }
 
 /**
- * Услуги из data/services.json: создаются только те, которых ещё нет (по ярлыку, в любом статусе,
- * включая корзину), — уже существующие услуги не изменяются. Ярлыки совпадают со старым сайтом.
+ * Услуги из data/services.json (тексты старого сайта, цены, фото из data/legacy-services/).
+ *  — услуги, которой нет (по ярлыку), создаётся;
+ *  — услуга, созданная мастером по прежней версии файла и с тех пор не редактировавшаяся,
+ *    обновляется до новой версии (прежнее содержимое — в «Редакциях»);
+ *  — услуга, которую правили вручную, не изменяется (только получает фото, если его нет).
  */
 function kasatkina_create_services(): array {
 	$file = KASATKINA_DIR . '/data/services.json';
@@ -346,6 +349,7 @@ function kasatkina_create_services(): array {
 	if ( ! is_array( $data ) ) {
 		return array( 'Файл data/services.json не найден — услуги не созданы.' );
 	}
+	$version = (int) ( $data['version'] ?? 1 );
 
 	$terms = array();
 	foreach ( $data['categories'] ?? array() as $slug => $name ) {
@@ -359,56 +363,114 @@ function kasatkina_create_services(): array {
 		}
 	}
 
-	$log     = array();
-	$created = 0;
+	$fields = array( 'price', 'duration', 'course', 'pain', 'description', 'advantages', 'indications', 'contraindications', 'faq' );
+	$log    = array();
+	$count  = array( 'created' => 0, 'updated' => 0, 'photos' => 0 );
+
 	foreach ( $data['services'] ?? array() as $order => $item ) {
-		$exists = get_posts( array(
+		$existing = get_posts( array(
 			'post_type'      => 'service',
 			'name'           => $item['slug'],
-			'post_status'    => 'any',
+			'post_status'    => array( 'publish', 'draft', 'pending', 'private', 'future' ),
 			'posts_per_page' => 1,
-			'fields'         => 'ids',
-		) ) ?: get_posts( array(
-			'post_type'      => 'service',
-			'name'           => $item['slug'] . '__trashed',
-			'post_status'    => 'trash',
-			'posts_per_page' => 1,
-			'fields'         => 'ids',
 		) );
-		if ( $exists ) {
-			continue;
-		}
-
-		$meta = array( '_service_icon' => $item['icon'] ?? 'sparkles' );
-		foreach ( array( 'price', 'duration', 'course', 'pain', 'description', 'advantages', 'indications', 'contraindications', 'faq' ) as $field ) {
-			if ( isset( $item[ $field ] ) && '' !== $item[ $field ] ) {
-				$meta[ '_service_' . $field ] = $item[ $field ];
+		$existing = $existing ? $existing[0] : null;
+		if ( ! $existing ) {
+			// В корзине — значит, удалили намеренно: не воскрешаем.
+			$trashed = get_posts( array( 'post_type' => 'service', 'post_status' => 'trash', 'posts_per_page' => -1 ) );
+			foreach ( $trashed as $post ) {
+				if ( in_array( $post->post_name, array( $item['slug'], $item['slug'] . '__trashed' ), true ) ) {
+					continue 2;
+				}
 			}
 		}
 
-		$id = wp_insert_post( wp_slash( array(
-			'post_type'    => 'service',
-			'post_status'  => 'publish',
-			'post_title'   => $item['title'],
-			'post_name'    => $item['slug'],
-			'post_excerpt' => $item['excerpt'] ?? '',
-			'menu_order'   => $order,
-			'meta_input'   => $meta,
-		) ), true );
-		if ( is_wp_error( $id ) ) {
-			$log[] = sprintf( 'Услуга «%s» не создана: %s', $item['title'], $id->get_error_message() );
-			continue;
+		$seeded   = $existing ? (int) get_post_meta( $existing->ID, '_ks_seed_version', true ) : 0;
+		$pristine = $existing && $seeded && get_post_meta( $existing->ID, '_ks_seed_modified', true ) === $existing->post_modified_gmt;
+		// Заготовки темы 2.2 отметки не имели: считаем их нетронутыми, если их ни разу не сохраняли после создания.
+		if ( $existing && ! $seeded && $existing->post_modified_gmt === $existing->post_date_gmt ) {
+			$seeded   = 1;
+			$pristine = true;
 		}
-		if ( isset( $terms[ $item['category'] ?? '' ] ) ) {
-			wp_set_object_terms( $id, $terms[ $item['category'] ], 'service_category' );
+
+		if ( ! $existing || ( $pristine && $seeded < $version ) ) {
+			$meta = array( '_service_icon' => $item['icon'] ?? 'sparkles' );
+			foreach ( $fields as $field ) {
+				$meta[ '_service_' . $field ] = (string) ( $item[ $field ] ?? '' );
+			}
+			$post = array(
+				'post_type'    => 'service',
+				'post_status'  => $existing ? $existing->post_status : 'publish',
+				'post_title'   => $item['title'],
+				'post_name'    => $item['slug'],
+				'post_excerpt' => $item['excerpt'] ?? '',
+				'menu_order'   => $order,
+				'meta_input'   => $meta,
+			);
+			if ( $existing ) {
+				_wp_put_post_revision( $existing );
+				$post['ID'] = $existing->ID;
+			}
+			$id = $existing ? wp_update_post( wp_slash( $post ), true ) : wp_insert_post( wp_slash( $post ), true );
+			if ( is_wp_error( $id ) ) {
+				$log[] = sprintf( 'Услуга «%s» не сохранена: %s', $item['title'], $id->get_error_message() );
+				continue;
+			}
+			if ( isset( $terms[ $item['category'] ?? '' ] ) ) {
+				wp_set_object_terms( $id, $terms[ $item['category'] ], 'service_category' );
+			}
+			++$count[ $existing ? 'updated' : 'created' ];
+		} else {
+			$id = $existing->ID;
 		}
-		++$created;
+
+		if ( ! has_post_thumbnail( $id ) && kasatkina_service_photo( $id, $item['slug'] ) ) {
+			++$count['photos'];
+		}
+
+		// Отметка «создано мастером»: пока услугу не правили вручную, следующая версия файла её обновит.
+		if ( ! $existing || $pristine ) {
+			update_post_meta( $id, '_ks_seed_version', max( $seeded, $version ) );
+			update_post_meta( $id, '_ks_seed_modified', get_post( $id )->post_modified_gmt );
+		}
 	}
 
-	$log[] = $created
-		? sprintf( 'Создано услуг: %d. Проверьте тексты и впишите цены в «Услуги → (услуга) → Данные услуги».', $created )
-		: 'Услуги уже есть — новые не создавались.';
+	if ( $count['created'] ) {
+		$log[] = sprintf( 'Создано услуг: %d.', $count['created'] );
+	}
+	if ( $count['updated'] ) {
+		$log[] = sprintf( 'Обновлено услуг (тексты и цены со старого сайта): %d. Прежние тексты — в «Редакциях».', $count['updated'] );
+	}
+	if ( $count['photos'] ) {
+		$log[] = sprintf( 'Добавлено фото услуг: %d.', $count['photos'] );
+	}
+	if ( ! array_filter( $count ) ) {
+		$log[] = 'Услуги уже на месте — ничего не изменялось.';
+	}
 	return $log;
+}
+
+/**
+ * Фото услуги из темы (data/legacy-services/<ярлык>.jpg) — в медиатеку и в «Изображение записи».
+ */
+function kasatkina_service_photo( int $post_id, string $slug ): bool {
+	$src = KASATKINA_DIR . '/data/legacy-services/' . $slug . '.jpg';
+	if ( ! is_readable( $src ) ) {
+		return false;
+	}
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/media.php';
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+
+	$tmp = wp_tempnam( $slug . '.jpg' );
+	copy( $src, $tmp );
+	$id = media_handle_sideload( array( 'name' => $slug . '.jpg', 'tmp_name' => $tmp ), $post_id, get_the_title( $post_id ) );
+	if ( is_wp_error( $id ) ) {
+		@unlink( $tmp ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+		return false;
+	}
+	update_post_meta( $id, '_wp_attachment_image_alt', get_the_title( $post_id ) );
+	return (bool) set_post_thumbnail( $post_id, $id );
 }
 
 /**
@@ -544,7 +606,7 @@ function kasatkina_render_setup_page(): void {
 					<label><input type="checkbox" name="pages" value="1" checked> Создать недостающие страницы</label><br>
 					<label><input type="checkbox" name="reading" value="1" checked> Назначить главную страницу и страницу статей</label><br>
 					<label><input type="checkbox" name="menu" value="1" checked> Создать меню, если оно ещё не назначено</label><br>
-					<label><input type="checkbox" name="services" value="1" checked> Создать услуги центра, которых ещё нет (7 услуг старого сайта; существующие не изменяются)</label><br>
+					<label><input type="checkbox" name="services" value="1" checked> Создать и обновить услуги центра: тексты старого сайта, цены, фото (услуги, которые вы правили вручную, не изменяются)</label><br>
 					<label><input type="checkbox" name="legacy" value="1" checked> Перенести статьи со старого сайта и сделать адреса услуг как на старом сайте</label><br><br>
 					<label><input type="checkbox" name="overwrite" value="1"> <strong>Перезаписать содержимое уже существующих страниц</strong></label>
 					<p class="description">Нужно при переходе с бета-версии темы. Прежнее содержимое не пропадёт — его можно вернуть через «Редакции» в редакторе страницы.</p>
