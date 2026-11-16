@@ -239,7 +239,7 @@ function kasatkina_run_site_setup( array $opts ): array {
 		if ( $existing ) {
 			$ids[ $key ] = $existing->ID;
 			// Пустая страница (например, созданная раньше без текста) заполняется и без перезаписи.
-			$replace_draft = $replace_draft || '' === trim( $existing->post_content );
+			$replace_draft = $replace_draft || ( '' === trim( $existing->post_content ) && '' !== trim( $content ) );
 			if ( ! empty( $opts['overwrite'] ) || $replace_draft ) {
 				// Явно сохраняем текущее содержимое в «Редакции» — WordPress сам этого не делает,
 				// если у страницы ещё не было ни одной редакции.
@@ -321,6 +321,10 @@ function kasatkina_run_site_setup( array $opts ): array {
 		}
 	}
 
+	if ( ! empty( $opts['services'] ) ) {
+		$log = array_merge( $log, kasatkina_create_services() );
+	}
+
 	if ( ! empty( $opts['legacy'] ) ) {
 		$log = array_merge( $log, kasatkina_apply_legacy() );
 	}
@@ -329,6 +333,81 @@ function kasatkina_run_site_setup( array $opts ): array {
 		update_option( 'kasatkina_setup_done', time(), false );
 	}
 
+	return $log;
+}
+
+/**
+ * Услуги из data/services.json: создаются только те, которых ещё нет (по ярлыку, в любом статусе,
+ * включая корзину), — уже существующие услуги не изменяются. Ярлыки совпадают со старым сайтом.
+ */
+function kasatkina_create_services(): array {
+	$file = KASATKINA_DIR . '/data/services.json';
+	$data = is_readable( $file ) ? json_decode( (string) file_get_contents( $file ), true ) : null;
+	if ( ! is_array( $data ) ) {
+		return array( 'Файл data/services.json не найден — услуги не созданы.' );
+	}
+
+	$terms = array();
+	foreach ( $data['categories'] ?? array() as $slug => $name ) {
+		$term = get_term_by( 'slug', $slug, 'service_category' ) ?: get_term_by( 'name', $name, 'service_category' );
+		if ( ! $term ) {
+			$created = wp_insert_term( $name, 'service_category', array( 'slug' => $slug ) );
+			$term    = is_wp_error( $created ) ? null : get_term( $created['term_id'], 'service_category' );
+		}
+		if ( $term ) {
+			$terms[ $slug ] = (int) $term->term_id;
+		}
+	}
+
+	$log     = array();
+	$created = 0;
+	foreach ( $data['services'] ?? array() as $order => $item ) {
+		$exists = get_posts( array(
+			'post_type'      => 'service',
+			'name'           => $item['slug'],
+			'post_status'    => 'any',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+		) ) ?: get_posts( array(
+			'post_type'      => 'service',
+			'name'           => $item['slug'] . '__trashed',
+			'post_status'    => 'trash',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+		) );
+		if ( $exists ) {
+			continue;
+		}
+
+		$meta = array( '_service_icon' => $item['icon'] ?? 'sparkles' );
+		foreach ( array( 'price', 'duration', 'course', 'pain', 'description', 'advantages', 'indications', 'contraindications', 'faq' ) as $field ) {
+			if ( isset( $item[ $field ] ) && '' !== $item[ $field ] ) {
+				$meta[ '_service_' . $field ] = $item[ $field ];
+			}
+		}
+
+		$id = wp_insert_post( wp_slash( array(
+			'post_type'    => 'service',
+			'post_status'  => 'publish',
+			'post_title'   => $item['title'],
+			'post_name'    => $item['slug'],
+			'post_excerpt' => $item['excerpt'] ?? '',
+			'menu_order'   => $order,
+			'meta_input'   => $meta,
+		) ), true );
+		if ( is_wp_error( $id ) ) {
+			$log[] = sprintf( 'Услуга «%s» не создана: %s', $item['title'], $id->get_error_message() );
+			continue;
+		}
+		if ( isset( $terms[ $item['category'] ?? '' ] ) ) {
+			wp_set_object_terms( $id, $terms[ $item['category'] ], 'service_category' );
+		}
+		++$created;
+	}
+
+	$log[] = $created
+		? sprintf( 'Создано услуг: %d. Проверьте тексты и впишите цены в «Услуги → (услуга) → Данные услуги».', $created )
+		: 'Услуги уже есть — новые не создавались.';
 	return $log;
 }
 
@@ -435,6 +514,7 @@ function kasatkina_render_setup_page(): void {
 			'overwrite' => ! empty( $_POST['overwrite'] ),
 			'reading'   => ! empty( $_POST['reading'] ),
 			'menu'      => ! empty( $_POST['menu'] ),
+			'services'  => ! empty( $_POST['services'] ),
 			'legacy'    => ! empty( $_POST['legacy'] ),
 		) );
 	}
@@ -464,6 +544,7 @@ function kasatkina_render_setup_page(): void {
 					<label><input type="checkbox" name="pages" value="1" checked> Создать недостающие страницы</label><br>
 					<label><input type="checkbox" name="reading" value="1" checked> Назначить главную страницу и страницу статей</label><br>
 					<label><input type="checkbox" name="menu" value="1" checked> Создать меню, если оно ещё не назначено</label><br>
+					<label><input type="checkbox" name="services" value="1" checked> Создать услуги центра, которых ещё нет (7 услуг старого сайта; существующие не изменяются)</label><br>
 					<label><input type="checkbox" name="legacy" value="1" checked> Перенести статьи со старого сайта и сделать адреса услуг как на старом сайте</label><br><br>
 					<label><input type="checkbox" name="overwrite" value="1"> <strong>Перезаписать содержимое уже существующих страниц</strong></label>
 					<p class="description">Нужно при переходе с бета-версии темы. Прежнее содержимое не пропадёт — его можно вернуть через «Редакции» в редакторе страницы.</p>

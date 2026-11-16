@@ -25,8 +25,9 @@ get_header();
 				$faqs[] = $parts;
 			}
 		}
+		$consult           = kasatkina_service_is_consult( $id );
 		$stats = array_filter( array(
-			'минут сеанс'   => (string) get_post_meta( $id, '_service_duration', true ),
+			( $consult ? 'минут встреча' : 'минут сеанс' )   => (string) get_post_meta( $id, '_service_duration', true ),
 			'процедур курс' => (string) get_post_meta( $id, '_service_course', true ),
 			'боли и швов'   => (string) get_post_meta( $id, '_service_pain', true ),
 		), 'strlen' );
@@ -48,7 +49,7 @@ get_header();
 						<?php endif; ?>
 
 						<div class="mt-8 flex flex-wrap items-center gap-3">
-							<a href="#booking" class="ks-btn">Записаться на процедуру <?php echo kasatkina_icon( 'arrow-right', 16 ); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
+							<a href="#booking" class="ks-btn"><?php echo $consult ? 'Записаться на консультацию' : 'Записаться на процедуру'; ?> <?php echo kasatkina_icon( 'arrow-right', 16 ); // phpcs:ignore WordPress.Security.EscapeOutput ?></a>
 							<?php if ( $price ) : ?>
 								<span class="inline-flex items-center gap-2 rounded-full border border-brand bg-white px-5 py-3 text-sm font-bold text-brand"><?php echo esc_html( $price ); ?></span>
 							<?php endif; ?>
@@ -85,8 +86,13 @@ get_header();
 				<div class="mx-auto max-w-7xl px-6">
 					<div class="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-start">
 						<div>
-							<p class="ks-eyebrow">О процедуре</p>
-							<h2 class="mt-3 text-4xl font-extrabold tracking-tight text-ink sm:text-5xl">Что такое <?php echo esc_html( kasatkina_lcfirst( get_the_title() ) ); ?></h2>
+							<?php if ( $consult ) : ?>
+								<p class="ks-eyebrow">О консультации</p>
+								<h2 class="mt-3 text-4xl font-extrabold tracking-tight text-ink sm:text-5xl">Как проходит консультация</h2>
+							<?php else : ?>
+								<p class="ks-eyebrow">О процедуре</p>
+								<h2 class="mt-3 text-4xl font-extrabold tracking-tight text-ink sm:text-5xl">Что такое <?php echo esc_html( kasatkina_lcfirst( get_the_title() ) ); ?></h2>
+							<?php endif; ?>
 							<?php if ( get_the_content() ) : ?>
 								<div class="ks-service-media mt-8"><?php the_content(); ?></div>
 							<?php endif; ?>
@@ -96,7 +102,7 @@ get_header();
 								<div class="ks-prose"><?php echo wp_kses_post( wpautop( $description ) ); ?></div>
 							<?php endif; ?>
 							<?php if ( $advantages ) : ?>
-								<h3 class="mt-8 text-lg font-bold text-ink">Преимущества метода</h3>
+								<h3 class="mt-8 text-lg font-bold text-ink"><?php echo $consult ? 'Почему к нам обращаются' : 'Преимущества метода'; ?></h3>
 								<ul class="ks-checklist mt-4 grid gap-3 sm:grid-cols-2">
 									<?php foreach ( $advantages as $item ) : ?>
 										<li><?php echo esc_html( $item ); ?></li>
@@ -112,16 +118,16 @@ get_header();
 		<?php if ( $indications || $contraindications ) : ?>
 			<section class="border-b border-line/30 bg-brand-soft/40 py-20">
 				<div class="mx-auto max-w-7xl px-6">
-					<p class="ks-eyebrow">Показания и противопоказания</p>
-					<h2 class="mt-3 text-4xl font-extrabold tracking-tight text-ink sm:text-5xl">Когда назначают процедуру</h2>
+					<p class="ks-eyebrow"><?php echo $consult ? 'С чем можно обратиться' : 'Показания и противопоказания'; ?></p>
+					<h2 class="mt-3 text-4xl font-extrabold tracking-tight text-ink sm:text-5xl"><?php echo $consult ? 'С какими запросами приходят' : 'Когда назначают процедуру'; ?></h2>
 					<div class="mt-12 grid gap-6 lg:grid-cols-2">
 						<?php if ( $indications ) : ?>
 							<div class="rounded-3xl border border-brand/30 bg-white p-8 shadow-sm">
 								<div class="flex items-center gap-3">
 									<span class="ks-icon-tile ks-icon-tile--solid"><?php echo kasatkina_icon( 'check', 24 ); // phpcs:ignore WordPress.Security.EscapeOutput ?></span>
 									<div>
-										<div class="text-xs font-semibold uppercase tracking-widest text-brand">Показания</div>
-										<div class="text-xl font-bold text-ink">Когда рекомендуется</div>
+										<div class="text-xs font-semibold uppercase tracking-widest text-brand"><?php echo $consult ? 'Запросы' : 'Показания'; ?></div>
+										<div class="text-xl font-bold text-ink"><?php echo $consult ? 'Когда стоит обратиться' : 'Когда рекомендуется'; ?></div>
 									</div>
 								</div>
 								<ul class="ks-checks mt-6">
@@ -153,7 +159,7 @@ get_header();
 			</section>
 		<?php endif; ?>
 
-		<?php get_template_part( 'template-parts/service-steps' ); ?>
+		<?php get_template_part( 'template-parts/service-steps', null, array( 'consult' => $consult ) ); ?>
 
 		<?php if ( $faqs ) : ?>
 			<section class="border-b border-line/30 bg-brand-soft/40 py-20">

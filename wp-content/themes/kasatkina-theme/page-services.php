@@ -30,7 +30,7 @@ get_header();
 	<?php endwhile; ?>
 
 	<?php
-	$categories = get_terms( array( 'taxonomy' => 'service_category', 'hide_empty' => true ) );
+	$categories = get_terms( array( 'taxonomy' => 'service_category', 'hide_empty' => true, 'orderby' => 'term_id' ) ); // в порядке создания категорий
 	$groups     = array();
 
 	if ( ! is_wp_error( $categories ) && $categories ) {

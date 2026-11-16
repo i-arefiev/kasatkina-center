@@ -200,3 +200,21 @@ function kasatkina_service_card( int $post_id, string $style = 'icon' ): string 
 		esc_html( $excerpt )
 	);
 }
+
+/**
+ * Услуга-консультация (психолог), а не процедура: на её странице другие формулировки
+ * («Записаться на консультацию», свои шаги). Определяется по категории «Психологическая помощь»
+ * (ярлык psihologicheskaya-pomoshh или слово «психолог» в названии категории).
+ */
+function kasatkina_service_is_consult( int $post_id ): bool {
+	$terms = get_the_terms( $post_id, 'service_category' );
+	if ( ! $terms || is_wp_error( $terms ) ) {
+		return false;
+	}
+	foreach ( $terms as $term ) {
+		if ( 'psihologicheskaya-pomoshh' === $term->slug || false !== mb_stripos( $term->name, 'психолог' ) ) {
+			return true;
+		}
+	}
+	return false;
+}
