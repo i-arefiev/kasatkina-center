@@ -1,0 +1,47 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "kasatkina/booking-form",
+	"title": "Форма записи",
+	"category": "kasatkina",
+	"icon": "feedback",
+	"description": "Форма заявки. Заявки сохраняются в разделе «Заявки» и приходят на почту.",
+	"keywords": [
+		"форма",
+		"заявка",
+		"запись"
+	],
+	"textdomain": "kasatkina",
+	"attributes": {
+		"title": {
+			"type": "string",
+			"default": "Записаться на прием"
+		},
+		"subtitle": {
+			"type": "string",
+			"default": "Мы свяжемся с Вами в течение рабочего дня."
+		},
+		"buttonText": {
+			"type": "string",
+			"default": "Отправить заявку"
+		},
+		"showService": {
+			"type": "boolean",
+			"default": true
+		},
+		"showComment": {
+			"type": "boolean",
+			"default": false
+		},
+		"variant": {
+			"type": "string",
+			"default": "card"
+		}
+	},
+	"supports": {
+		"html": false,
+		"className": true
+	},
+	"editorScript": "kasatkina-editor-blocks",
+	"render": "file:./render.php"
+}

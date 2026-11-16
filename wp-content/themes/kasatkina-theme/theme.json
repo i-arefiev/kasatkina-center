@@ -1,0 +1,89 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"settings": {
+		"appearanceTools": false,
+		"color": {
+			"defaultPalette": false,
+			"defaultGradients": false,
+			"defaultDuotone": false,
+			"custom": true,
+			"palette": [
+				{
+					"slug": "brand",
+					"name": "Фирменный зелёный",
+					"color": "#3BC68B"
+				},
+				{
+					"slug": "brand-dark",
+					"name": "Тёмно-зелёный",
+					"color": "#2EB078"
+				},
+				{
+					"slug": "brand-soft",
+					"name": "Мятный фон",
+					"color": "#EBF9F3"
+				},
+				{
+					"slug": "ink",
+					"name": "Основной текст",
+					"color": "#1E293B"
+				},
+				{
+					"slug": "navy",
+					"name": "Тёмно-синий",
+					"color": "#0F172A"
+				},
+				{
+					"slug": "surface",
+					"name": "Светло-серый фон",
+					"color": "#FAFBFC"
+				},
+				{
+					"slug": "white",
+					"name": "Белый",
+					"color": "#FFFFFF"
+				}
+			]
+		},
+		"spacing": {
+			"blockGap": null,
+			"customSpacingSize": false,
+			"defaultSpacingSizes": false
+		},
+		"typography": {
+			"defaultFontSizes": false,
+			"customFontSize": false,
+			"dropCap": false,
+			"fontSizes": [
+				{
+					"slug": "small",
+					"name": "Мелкий",
+					"size": "0.875rem"
+				},
+				{
+					"slug": "medium",
+					"name": "Обычный",
+					"size": "1rem"
+				},
+				{
+					"slug": "large",
+					"name": "Крупный",
+					"size": "1.25rem"
+				}
+			]
+		}
+	},
+	"styles": {
+		"elements": {
+			"link": {
+				"typography": {
+					"textDecoration": "none"
+				},
+				"color": {
+					"text": "inherit"
+				}
+			}
+		}
+	}
+}
